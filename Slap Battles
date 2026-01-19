@@ -1,0 +1,172 @@
+local a=game:GetService"Workspace"
+local b=game:GetService"Players"
+local c=b.LocalPlayer
+
+local d=a:WaitForChild("Arena",5)["main island"]
+a.Arena:FindFirstChild"island5"
+local e=d and d.Part.Position.Y+5
+
+local function getHRP(f)
+
+if not f then f=c end
+local g=f.Character
+if not g then return nil end
+
+return g:FindFirstChild"HumanoidRootPart",g.Name
+end
+
+
+local function getGlove()
+local f=c.Character
+if not f then return nil end
+
+return f:FindFirstChildWhichIsA"Tool"
+end
+local function magnitude(f,g)
+local h=f-g
+return math.sqrt(h.X*h.X+h.Y*h.Y+h.Z*h.Z)
+end
+local function getClosestPlayerHRP()
+local f
+local g=math.huge
+
+local h=getHRP()
+for i,j in pairs(b:GetPlayers())do
+if not j then continue end
+local k,l=getHRP(j)
+
+if not h or not k then continue end
+if h.Address==k.Address then continue end
+
+local m=magnitude(h.Position,k.Position)
+if m<g then g=m;f=k;playerName=l;end
+end
+return f,playerName
+end
+
+local f={}
+local function mousewithindrawing(g,h)
+local i=c:GetMouse()
+return i.X>=g.X
+and i.X<=g.X+h.X
+and i.Y>=g.Y
+and i.Y<=g.Y+h.Y
+end
+
+
+local g=true
+local h=true
+local i=true
+local j=false
+
+local k=Color3.fromRGB(128,128,255)
+local l=Color3.fromRGB(255,128,128)
+local m={ExtraReach=
+{Text="Loading...",ToggleVar=function()g=not g;f.ExtraReach.Color=g and k or l end},AntiFall=
+{Text="Loading...",ToggleVar=function()h=not h;f.AntiFall.Color=h and k or l end},AntiKnockback=
+{Text="Loading...",ToggleVar=function()i=not i;f.AntiKnockback.Color=i and k or l end},AutoFarm=
+{Text="Not Built Yet...",ToggleVar=function()AutoSlapple=not AutoSlapple;f.AutoFarm.Color=j and k or l end}
+}
+
+
+local n=true
+
+
+local function MAIN()
+while true do task.wait()
+local o=getHRP()
+
+if g then
+local p=getGlove()
+local q,r=getClosestPlayerHRP()
+
+m.ExtraReach.Text=r
+
+if p and q then
+for s,t in pairs(p:GetChildren())do
+if t.Position then
+t.Position=q.Position
+end
+end
+end
+end
+
+if h then
+if not o then continue end
+local p=o.Position.Y
+
+if p<e then
+o.Velocity=Vector3.new(0,2,0)
+for q=1,5 do
+o.Position=d.Part.Position+Vector3.new(0,15,0)
+task.wait(0.1)
+end
+end
+m.AntiFall.Text=tostring(math.round(p-d.Part.Position.Y))
+end
+
+if i then
+m.AntiKnockback.Text="Waiting For Ragdoll..."
+if c.Character and c.Character.Ragdolled.Value==true then
+m.AntiKnockback.Text="Stopping Velocity"
+local p=o.Position
+for q=1,10 do
+o.Position=p
+o.Velocity=Vector3.new(0,2,0)
+task.wait(0.05)
+end
+end
+end
+end
+end
+
+
+
+
+
+local o=a.CurrentCamera.ViewportSize
+
+local function VISUALS()
+
+local p=Vector2.new(240,16)
+local q=64
+
+for r,s in pairs(m)do
+f[r]=Drawing.new"Text"
+f[r].Position=Vector2.new(25,o.Y-q)
+f[r].Size=16
+f[r].Color=k
+f[r].Visible=true
+f[r].Text="Starting..."
+f[r].Outline=true
+
+q-=16
+end
+
+while true do task.wait()
+if n then
+
+for r,s in pairs(f)do
+s.Text=r..": "..m[r].Text
+end
+
+
+
+
+
+
+for r,s in pairs(f)do
+if mousewithindrawing(f[r].Position,p)and ismouse1pressed()then
+m[r].ToggleVar()
+repeat wait()until not ismouse1pressed()
+end
+end
+end
+end
+end
+
+print"Slap Battles Script Active :)"
+spawn(MAIN)
+
+task.wait(1)
+spawn(VISUALS)
