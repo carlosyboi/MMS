@@ -1,0 +1,2494 @@
+
+UILib={}
+UILib.__index=UILib
+
+ESP_FONTSIZE=7
+
+BLACK=Color3.new(0,0,0)
+
+local a=game:GetService'Players'.LocalPlayer
+local b=a:GetMouse()
+
+local function clamp(c,d,e)
+if c>e then
+return e
+elseif d<d then
+return d
+else
+return c
+end
+end
+
+local function color3fromHSV(c,d,e)
+local f=math.floor(c*6)
+local g=c*6-f
+local h=e*(1-d)
+local i=e*(1-g*d)
+local j=e*(1-(1-g)*d)
+f=f%6
+
+local k,l,m
+if f==0 then k,l,m=e,j,h
+elseif f==1 then k,l,m=i,e,h
+elseif f==2 then k,l,m=h,e,j
+elseif f==3 then k,l,m=h,i,e
+elseif f==4 then k,l,m=j,h,e
+else k,l,m=e,h,i end
+
+return{k*255,l*255,m*255}
+end
+
+local function getMousePos()
+return Vector2.new(b.X,b.Y)
+end
+
+local function lerp(c,d,e)
+return c+(d-c)*e
+end
+
+local function undrawAll(c)
+for d,e in pairs(c)do
+e.Visible=false
+end
+end
+
+local function destroyAllDrawings(c)
+for d,e in ipairs(c)do
+e:Remove()
+end
+end
+
+function UILib.new(c,d,e)
+repeat
+wait(1.0001000100010001E-4)
+until isrbxactive()
+
+local f=setmetatable({},UILib)
+
+
+f._inputs={m1=
+{id=0x01,held=false,click=false},m2=
+{id=0x02,held=false,click=false},mb=
+{id=0x04,held=false,click=false},unbound=
+{id=0x08,held=false,click=false},tab=
+{id=0x09,held=false,click=false},enter=
+{id=0x0D,held=false,click=false},shift=
+{id=0x10,held=false,click=false},ctrl=
+{id=0x11,held=false,click=false},alt=
+{id=0x12,held=false,click=false},pause=
+{id=0x13,held=false,click=false},capslock=
+{id=0x14,held=false,click=false},esc=
+{id=0x1B,held=false,click=false},space=
+{id=0x20,held=false,click=false},pageup=
+{id=0x21,held=false,click=false},pagedown=
+{id=0x22,held=false,click=false},
+['end']={id=0x23,held=false,click=false},home=
+{id=0x24,held=false,click=false},left=
+{id=0x25,held=false,click=false},up=
+{id=0x26,held=false,click=false},right=
+{id=0x27,held=false,click=false},down=
+{id=0x28,held=false,click=false},insert=
+{id=0x2D,held=false,click=false},delete=
+{id=0x2E,held=false,click=false},
+['0']={id=0x30,held=false,click=false},
+['1']={id=0x31,held=false,click=false},
+['2']={id=0x32,held=false,click=false},
+['3']={id=0x33,held=false,click=false},
+['4']={id=0x34,held=false,click=false},
+['5']={id=0x35,held=false,click=false},
+['6']={id=0x36,held=false,click=false},
+['7']={id=0x37,held=false,click=false},
+['8']={id=0x38,held=false,click=false},
+['9']={id=0x39,held=false,click=false},a=
+{id=0x41,held=false,click=false},b=
+{id=0x42,held=false,click=false},c=
+{id=0x43,held=false,click=false},d=
+{id=0x44,held=false,click=false},e=
+{id=0x45,held=false,click=false},f=
+{id=0x46,held=false,click=false},g=
+{id=0x47,held=false,click=false},h=
+{id=0x48,held=false,click=false},i=
+{id=0x49,held=false,click=false},j=
+{id=0x4A,held=false,click=false},k=
+{id=0x4B,held=false,click=false},l=
+{id=0x4C,held=false,click=false},m=
+{id=0x4D,held=false,click=false},n=
+{id=0x4E,held=false,click=false},o=
+{id=0x4F,held=false,click=false},p=
+{id=0x50,held=false,click=false},q=
+{id=0x51,held=false,click=false},r=
+{id=0x52,held=false,click=false},s=
+{id=0x53,held=false,click=false},t=
+{id=0x54,held=false,click=false},u=
+{id=0x55,held=false,click=false},v=
+{id=0x56,held=false,click=false},w=
+{id=0x57,held=false,click=false},x=
+{id=0x58,held=false,click=false},y=
+{id=0x59,held=false,click=false},z=
+{id=0x5A,held=false,click=false},numpad0=
+
+
+{id=0x60,held=false,click=false},numpad1=
+{id=0x61,held=false,click=false},numpad2=
+{id=0x62,held=false,click=false},numpad3=
+{id=0x63,held=false,click=false},numpad4=
+{id=0x64,held=false,click=false},numpad5=
+{id=0x65,held=false,click=false},numpad6=
+{id=0x66,held=false,click=false},numpad7=
+{id=0x67,held=false,click=false},numpad8=
+{id=0x68,held=false,click=false},numpad9=
+{id=0x69,held=false,click=false},multiply=
+{id=0x6A,held=false,click=false},add=
+{id=0x6B,held=false,click=false},separator=
+{id=0x6C,held=false,click=false},subtract=
+{id=0x6D,held=false,click=false},decimal=
+{id=0x6E,held=false,click=false},divide=
+{id=0x6F,held=false,click=false},f1=
+{id=0x70,held=false,click=false},f2=
+{id=0x71,held=false,click=false},f3=
+{id=0x72,held=false,click=false},f4=
+{id=0x73,held=false,click=false},f5=
+{id=0x74,held=false,click=false},f6=
+{id=0x75,held=false,click=false},f7=
+{id=0x76,held=false,click=false},f8=
+{id=0x77,held=false,click=false},f9=
+{id=0x78,held=false,click=false},f10=
+{id=0x79,held=false,click=false},f11=
+{id=0x7A,held=false,click=false},f12=
+{id=0x7B,held=false,click=false},numlock=
+{id=0x90,held=false,click=false},scrolllock=
+{id=0x91,held=false,click=false},lshift=
+{id=0xA0,held=false,click=false},rshift=
+{id=0xA1,held=false,click=false},lctrl=
+{id=0xA2,held=false,click=false},rctrl=
+{id=0xA3,held=false,click=false},lalt=
+{id=0xA4,held=false,click=false},ralt=
+{id=0xA5,held=false,click=false},semicolon=
+{id=0xBA,held=false,click=false},plus=
+{id=0xBB,held=false,click=false},comma=
+{id=0xBC,held=false,click=false},minus=
+{id=0xBD,held=false,click=false},period=
+{id=0xBE,held=false,click=false},slash=
+{id=0xBF,held=false,click=false},tilde=
+{id=0xC0,held=false,click=false},lbracket=
+{id=0xDB,held=false,click=false},backslash=
+{id=0xDC,held=false,click=false},rbracket=
+{id=0xDD,held=false,click=false},quote=
+{id=0xDE,held=false,click=false},
+}
+
+f._active_tab=nil
+f._open=true
+f._watermark=true
+f._base_opacity=0
+f._dragging=false
+f._drag_offset=Vector2.new(0,0)
+f._active_dropdown=nil
+f._active_colorpicker=nil
+f._clipboard_color=nil
+f._tick=os.clock()
+
+
+f.identity=c
+f._watermark_activity=e
+f.x=20
+f.y=60
+f.w=d and d.x or 300
+f.h=d and d.y or 400
+
+
+f._color_accent=Color3.fromRGB(255,127,0)
+f._color_text=Color3.fromRGB(255,255,255)
+f._color_crust=Color3.fromRGB(0,0,0)
+f._color_border=Color3.fromRGB(25,25,25)
+f._color_surface=Color3.fromRGB(38,38,38)
+f._color_overlay=Color3.fromRGB(76,76,76)
+
+
+f._title_h=25
+f._tab_h=20
+f._padding=6
+f._gradient_detail=80
+
+
+local g=Drawing.new'Square'
+g.Filled=true
+g.Color=f._color_surface
+
+local h=Drawing.new'Square'
+h.Filled=false
+h.Thickness=1
+h.Color=f._color_crust
+
+local i=Drawing.new'Square'
+i.Filled=false
+i.Thickness=1
+i.Color=f._color_border
+
+local j=Drawing.new'Square'
+j.Filled=true
+j.Color=f._color_border
+
+local k=Drawing.new'Text'
+k.Text=f.identity
+k.Outline=true
+k.Color=f._color_text
+
+
+local l=Drawing.new'Square'
+l.Filled=true
+l.Color=f._color_surface
+
+local m=Drawing.new'Square'
+m.Filled=true
+m.Color=f._color_accent
+
+local n=Drawing.new'Square'
+n.Filled=false
+n.Thickness=1
+n.Color=f._color_crust
+
+local o=Drawing.new'Square'
+o.Filled=false
+o.Thickness=1
+o.Color=f._color_border
+
+local p=Drawing.new'Text'
+p.Text=c
+p.Outline=true
+p.Color=f._color_text
+
+f._tree={_tabs=
+{},_drawings=
+{h,i,g,j,k,l,m,n,o,p}
+}
+
+return f
+end
+
+function UILib._GetTextBounds(c)
+return#c*ESP_FONTSIZE,ESP_FONTSIZE
+end
+
+function UILib._IsMouseWithinBounds(c,d)
+local e=getMousePos()
+return e.x>=c.x and e.x<=c.x+d.x and e.y>=c.y and e.y<=c.y+d.y
+end
+
+function UILib._RemoveDropdown(c)
+if c._active_dropdown then
+local d=c._active_dropdown._drawings
+
+destroyAllDrawings(d)
+c._active_dropdown=nil
+end
+end
+
+function UILib._RemoveColorpicker(c)
+if c._active_colorpicker then
+local d=c._active_colorpicker._drawings
+
+destroyAllDrawings(d)
+c._active_colorpicker=nil
+end
+end
+
+function UILib._SpawnDropdown(c,d,e,f,g,h,i)
+if c._active_dropdown then
+c:_RemoveDropdown()
+end
+
+local j=Drawing.new'Square'
+j.Filled=true
+j.Color=c._color_surface
+
+local k=Drawing.new'Square'
+k.Filled=false
+k.Thickness=1
+k.Color=c._color_crust
+
+local l=Drawing.new'Square'
+l.Filled=false
+l.Thickness=1
+l.Color=c._color_border
+
+local m={j,k,l}
+for n,o in ipairs(e)do
+local p=Drawing.new'Text'
+p.Outline=true
+p.Color=c._color_text
+p.Text=o
+
+table.insert(m,p)
+end
+
+
+local n={}
+for o,p in ipairs(e)do
+n[p]=false
+end
+
+for o,p in ipairs(d)do
+n[p]=true
+end
+
+c._active_dropdown={choices=
+n,multi=
+f,callback=
+g,position=
+h,w=
+i,_drawings=
+m
+}
+end
+
+function UILib._SpawnColorpicker(c,d,e,f)
+if c._active_colorpicker then
+c:_RemoveColorpicker()
+end
+
+
+local g=Drawing.new'Square'
+g.Filled=true
+g.Color=c._color_surface
+
+local h=Drawing.new'Square'
+h.Filled=false
+h.Thickness=1
+h.Color=c._color_crust
+
+local i=Drawing.new'Square'
+i.Filled=false
+i.Thickness=1
+i.Color=c._color_border
+
+local j=Drawing.new'Square'
+j.Filled=true
+j.Color=c._color_border
+
+local k=Drawing.new'Text'
+k.Outline=true
+k.Color=c._color_text
+k.Text=e
+
+local l=Drawing.new'Square'
+l.Filled=true
+l.Color=c._color_surface
+
+local m={g,h,i,j,k,l}
+
+
+for n=1,c._gradient_detail*3 do
+local o=Drawing.new'Square'
+o.Filled=true
+
+table.insert(m,o)
+end
+
+
+local n=Drawing.new'Circle'
+n.Filled=false
+n.Thickness=3
+n.Radius=6
+n.NumSides=20
+n.Color=c._color_crust
+
+local o=Drawing.new'Circle'
+o.Filled=false
+o.Thickness=1
+o.Radius=6
+o.NumSides=20
+o.Color=c._color_border
+
+local p=Drawing.new'Square'
+p.Filled=true
+p.Color=c._color_border
+
+local q=Drawing.new'Square'
+q.Filled=false
+q.Thickness=1
+q.Color=c._color_surface
+
+local r=Drawing.new'Square'
+r.Filled=false
+r.Thickness=1
+r.Color=c._color_crust
+
+for s,t in ipairs{o,n,p,r,q}do
+table.insert(m,t)
+end
+
+c._active_colorpicker={callback=
+f,_pallete_pos=
+nil,_slider_y=
+0,_drawings=
+m
+}
+end
+
+function UILib.ToggleWatermark(c,d)
+c._watermark=d
+end
+
+function UILib.ToggleMenu(c,d)
+c._open=d
+end
+
+function UILib.IsMenuOpen(c)
+return c._open
+end
+
+function UILib.Tab(c,d)
+local e=Drawing.new'Square'
+e.Color=c._color_border
+e.Filled=true
+
+local f=Drawing.new'Square'
+f.Color=BLACK
+f.Filled=true
+
+local g=Drawing.new'Square'
+g.Color=c._color_accent
+g.Filled=true
+
+local h=Drawing.new'Text'
+h.Color=c._color_text
+h.Outline=true
+h.Text=d
+
+table.insert(c._tree._tabs,{name=
+d,_sections=
+{},_drawings=
+{e,f,g,h}
+})
+
+if c._active_tab==nil then
+c._active_tab=d
+end
+
+return d
+end
+
+function UILib.Section(c,d,e)
+for f,g in ipairs(c._tree._tabs)do
+if g.name==d then
+local h=Drawing.new'Square'
+h.Filled=true
+h.Color=c._color_surface
+
+local i=Drawing.new'Square'
+i.Filled=false
+i.Thickness=1
+i.Color=c._color_crust
+
+local j=Drawing.new'Square'
+j.Filled=false
+j.Thickness=1
+j.Color=c._color_overlay
+
+local k=Drawing.new'Text'
+k.Text=e
+k.Outline=true
+k.Color=c._color_text
+
+local l={name=
+e,_items=
+{},_drawings=
+{h,i,j,k}
+}
+
+table.insert(g._sections,l)
+return e
+end
+end
+end
+
+function UILib._AddToSection(c,d,e,f,g,h,i,j)
+for k,l in pairs(c._tree._tabs)do
+if l.name==d then
+for m,n in pairs(l._sections)do
+if n.name==e then
+local o={type=
+f,value=
+g,callback=
+h,_drawings=
+i
+}
+
+if j then
+for p,q in pairs(j)do
+o[p]=q
+end
+end
+
+table.insert(n._items,o)
+return
+end
+end
+end
+end
+end
+
+function UILib.Checkbox(c,d,e,f,g,h)
+local i=Drawing.new'Square'
+i.Color=c._color_crust
+i.Thickness=1
+i.Filled=false
+
+local j=Drawing.new'Square'
+j.Color=c._color_accent
+j.Filled=true
+
+local k=Drawing.new'Square'
+k.Color=BLACK
+k.Filled=true
+
+local l=Drawing.new'Text'
+l.Color=c._color_text
+l.Outline=true
+l.Text=f
+
+c:_AddToSection(d,e,'checkbox',g,h,{
+i,
+j,
+k,
+l
+})
+end
+
+function UILib.Slider(c,d,e,f,g,h,i,j,k,l)
+local m=Drawing.new'Square'
+m.Color=c._color_crust
+m.Filled=true
+
+local n=Drawing.new'Square'
+n.Color=c._color_accent
+n.Filled=true
+
+local o=Drawing.new'Square'
+o.Color=BLACK
+o.Filled=true
+
+local p=Drawing.new'Text'
+p.Color=c._color_text
+p.Outline=true
+p.Text=f
+
+local q=Drawing.new'Text'
+q.Color=c._color_text
+q.Outline=true
+q.Text=f
+
+c:_AddToSection(d,e,'slider',g,h,{
+m,
+n,
+o,
+p,
+q
+},{min=
+i,max=
+j,step=
+k,appendix=
+l
+})
+end
+
+function UILib.Choice(c,d,e,f,g,h,i,j)
+local k=Drawing.new'Square'
+k.Color=c._color_crust
+k.Thickness=1
+k.Filled=false
+
+local l=Drawing.new'Square'
+l.Color=c._color_crust
+l.Filled=true
+
+local m=Drawing.new'Text'
+m.Color=c._color_text
+m.Outline=true
+m.Text=f
+
+local n=Drawing.new'Text'
+n.Color=c._color_text
+n.Outline=true
+n.Text=f
+
+local o=Drawing.new'Text'
+o.Color=c._color_text
+o.Outline=true
+o.Text=f
+
+c:_AddToSection(d,e,'choice',g,h,{
+k,
+l,
+m,
+n,
+o
+},{choices=
+i,multi=
+j
+})
+end
+
+function UILib.Colorpicker(c,d,e,f,g,h)
+local i=Drawing.new'Square'
+i.Color=c._color_crust
+i.Thickness=1
+i.Filled=false
+
+local j=Drawing.new'Square'
+j.Color=c._color_crust
+j.Filled=true
+
+local k=Drawing.new'Square'
+k.Color=BLACK
+k.Filled=true
+
+local l=Drawing.new'Text'
+l.Color=c._color_text
+l.Outline=true
+l.Text=f
+
+c:_AddToSection(d,e,'colorpicker',g,h,{
+i,
+j,
+k,
+l
+},{label=
+f
+})
+end
+
+function UILib.Button(c,d,e,f,g)
+local h=Drawing.new'Square'
+h.Color=c._color_crust
+h.Thickness=1
+h.Filled=false
+
+local i=Drawing.new'Square'
+i.Color=c._color_crust
+i.Filled=true
+
+local j=Drawing.new'Text'
+j.Color=c._color_text
+j.Outline=true
+j.Text=f
+
+c:_AddToSection(d,e,'button',defaultValue,g,{
+h,
+i,
+j
+},{label=
+f
+})
+end
+
+function UILib.Keybind(c,d,e,f,g,h,i)
+local j=Drawing.new'Text'
+j.Color=c._color_text
+j.Outline=true
+j.Text=f
+
+local k=Drawing.new'Square'
+k.Color=c._color_crust
+k.Thickness=1
+k.Filled=false
+
+local l=Drawing.new'Square'
+l.Color=c._color_crust
+l.Filled=true
+
+local m=Drawing.new'Text'
+m.Color=c._color_text
+m.Outline=true
+
+c:_AddToSection(d,e,'key',g,h,{
+j,
+k,
+l,
+m
+},{mode=
+i or'Hold',_listening=
+false,_state=
+nil
+})
+end
+
+function UILib.CreateSettingsTab(c,d)
+local e=c:Tab(d or'Menu')
+local f=c:Section(e,'Settings')
+c:Keybind(e,f,'Open key','f1',function(g)
+c:ToggleMenu(g)
+end,'Toggle')
+c:Checkbox(e,f,'Watermark',true,function(g)
+c:ToggleWatermark(g)
+end)
+c:Checkbox(e,f,'Debug',false,nil)
+
+local g=c:Section(e,'Theming')
+local h={'X11','Nord','Dracula','Catppuccin'}
+c:Choice(e,g,'Preset theme',{h[1]},function(i)
+local j=c._tree._tabs[#c._tree._tabs]._sections[2]
+local k=j._items[2]
+local l=j._items[3]
+local m=j._items[4]
+local n=j._items[5]
+local o=j._items[6]
+
+local p=i[1]
+if p==h[1]then
+k.value={255,128,0}
+l.value={38,38,38}
+m.value={26,26,26}
+n.value={77,77,77}
+o.value={0,0,0}
+elseif p==h[2]then
+k.value={135,206,235}
+l.value={49,54,60}
+m.value={72,80,90}
+n.value={61,66,73}
+o.value={88,96,106}
+elseif p==h[3]then
+k.value={243,67,54}
+l.value={40,44,59}
+m.value={64,71,89}
+n.value={29,31,45}
+o.value={72,73,95}
+elseif p==h[4]then
+k.value={240,160,200}
+l.value={48,47,63}
+m.value={72,71,89}
+n.value={63,62,80}
+o.value={33,32,44}
+end
+
+k.callback(Color3.fromRGB(unpack(k.value)))
+l.callback(Color3.fromRGB(unpack(l.value)))
+m.callback(Color3.fromRGB(unpack(m.value)))
+n.callback(Color3.fromRGB(unpack(n.value)))
+o.callback(Color3.fromRGB(unpack(o.value)))
+end,h,false)
+c:Colorpicker(e,g,'Accent',{255,128,0},function(i)
+c._color_accent=i
+end)
+c:Colorpicker(e,g,'Base',{38,38,38},function(i)
+c._color_surface=i
+end)
+c:Colorpicker(e,g,'Inner stroke',{25,25,25},function(i)
+c._color_border=i
+end)
+c:Colorpicker(e,g,'Outer stroke',{76,76,76},function(i)
+c._color_overlay=i
+end)
+c:Colorpicker(e,g,'Crust',{0,0,0},function(i)
+c._color_crust=i
+end)
+
+return e,f,g
+end
+
+function UILib.Step(c)
+
+local d=math.max(os.clock()-c._tick,0.0035)
+local e=getMousePos()
+
+for f,g in pairs(c._inputs)do
+local h=g.id
+local i=iskeypressed(h)
+if isrbxactive()and i then
+if g.held==false and g.click==false then
+c._inputs[f].click=true
+else
+c._inputs[f].click=false
+end
+
+c._inputs[f].held=true
+else
+c._inputs[f].held=false
+end
+end
+local f=c._open
+local g=f and c._inputs.m1.click
+local h=f and c._inputs.m2.click
+local i=f and c._inputs.m1.held
+
+local j=c._base_opacity
+local k=j>0.22
+c._base_opacity=clamp(lerp(j,f==true and 1 or 0,d*11),0,1)
+
+setrobloxinput(not f)
+
+
+local l=c._tree._drawings[6]
+local m=c._tree._drawings[7]
+local n=c._tree._drawings[8]
+local o=c._tree._drawings[9]
+local p=c._tree._drawings[10]
+
+if c._watermark then
+local q={c.identity}
+local r=c._watermark_activity
+if r then
+for s,t in ipairs(r)do
+if type(t)=='function'then
+local u=t()
+if u~=nil and#u>0 then
+table.insert(q,u)
+end
+end
+end
+end
+
+local s=table.concat(q,' | ')
+local t,u=c._GetTextBounds(s)
+local v=Vector2.new(20,20)
+local w=Vector2.new(t+c._padding*3,u+c._padding*3)
+
+l.Position=v
+l.Size=w
+l.Visible=true
+l.Color=c._color_surface
+
+n.Position=v
+n.Size=w
+n.Visible=true
+n.Color=c._color_crust
+
+o.Position=v+Vector2.new(1,1)
+o.Size=w+Vector2.new(-2,-2)
+o.Visible=true
+o.Color=c._color_border
+
+m.Position=v+Vector2.new(2,2)
+m.Size=Vector2.new(w.x-4,1)
+m.Visible=true
+m.Color=c._color_accent
+
+p.Position=v+Vector2.new(2+c._padding,2+c._padding)
+p.Text=s
+p.Visible=true
+p.Color=c._color_text
+else
+l.Visible=false
+n.Visible=false
+o.Visible=false
+m.Visible=false
+p.Visible=false
+end
+
+
+if c._active_colorpicker then
+local q=c._active_colorpicker._drawings
+local r=q[1]
+local s=q[2]
+local t=q[3]
+local u=q[4]
+local v=q[5]
+local w=q[6]
+
+w.Visible=false
+
+local x=Vector2.new(c.x+c.w+c._padding*2,c.y)
+local y=Vector2.new(200,170+c._title_h)
+
+r.Position=x
+r.Size=y
+r.Transparency=j
+r.Visible=k
+r.Color=c._color_surface
+
+s.Position=x
+s.Size=y
+s.Transparency=j
+s.Visible=k
+s.Color=c._color_crust
+
+t.Position=x+Vector2.new(1,1)
+t.Size=y-Vector2.new(2,2)
+t.Transparency=j
+t.Visible=k
+t.Color=c._color_border
+
+u.Position=x+Vector2.new(1,1)
+u.Size=Vector2.new(y.x-2,c._title_h-3)
+u.Transparency=j
+u.Visible=k
+u.Color=c._color_border
+
+v.Position=x+Vector2.new(c._padding,c._padding)
+v.Transparency=j
+v.Visible=k
+v.Color=c._color_text
+
+local z=x+Vector2.new(c._padding,c._title_h+c._padding)
+local A=y.y-c._title_h-c._padding*2
+
+for B=1,c._gradient_detail do
+local C=q[6+B]
+local D=1-(B-1)/(c._gradient_detail-1)
+C.Size=Vector2.new(A*D,A)
+C.Position=z
+local E=clamp((c._active_colorpicker._slider_y)/A,0,1)
+C.Color=Color3.fromHSV(E,D,1)
+C.Transparency=j
+C.Visible=k
+end
+
+for B=1,c._gradient_detail do
+local C=q[6+c._gradient_detail+B]
+local D=1-B/c._gradient_detail
+C.Size=Vector2.new(A,A*D)
+C.Position=z+Vector2.new(0,A*(1-D))
+C.Color=BLACK
+C.Transparency=j*1/(c._gradient_detail/3)
+C.Visible=k
+end
+
+local B=y.x-A-c._padding*4
+local C=z+Vector2.new(y.x-B-c._padding*2.5,0)
+for D=1,c._gradient_detail do
+local E=q[6+c._gradient_detail*2+D]
+local F=1-(D-1)/c._gradient_detail
+E.Size=Vector2.new(B,A*F)
+E.Position=C
+E.Color=Color3.fromHSV(F,1,1)
+E.Transparency=j
+E.Visible=k
+end
+
+local D=6+c._gradient_detail*3
+local E=q[D+1]
+local F=q[D+2]
+local G=q[D+3]
+local H=q[D+4]
+local I=q[D+5]
+
+if i then
+if c._IsMouseWithinBounds(z,Vector2.new(A,A))then
+c._active_colorpicker._pallete_pos=e
+elseif c._IsMouseWithinBounds(C,Vector2.new(B,A))then
+c._active_colorpicker._slider_y=e.y-z.y
+end
+end
+
+local J=c._active_colorpicker._pallete_pos or z
+local K=C+Vector2.new(-2,c._active_colorpicker._slider_y)
+
+local L=Vector2.new(
+clamp((J.x-z.x)/A,0,1),
+clamp((J.y-z.y)/A,0,1)
+)
+local M=clamp((c._active_colorpicker._slider_y)/A,0,1)
+
+local N=M
+local O=L.x
+local P=1-L.y
+local Q=color3fromHSV(N,O,P)
+
+if i then
+if c._active_colorpicker.callback then
+c._active_colorpicker.callback(Q)
+end
+end
+
+E.Position=J
+E.Color=c._color_text
+E.Visible=k
+
+F.Position=J
+F.Color=c._color_crust
+F.Visible=k
+
+local R=Vector2.new(B+4,4)
+G.Size=R
+G.Position=K
+G.Color=c._color_surface
+G.Visible=k
+
+H.Size=R
+H.Position=K
+H.Color=c._color_crust
+H.Visible=k
+
+I.Size=R+Vector2.new(-2,-2)
+I.Position=K+Vector2.new(1,1)
+I.Color=c._color_border
+I.Visible=k
+
+if g and not c._IsMouseWithinBounds(x,y)then
+c:_RemoveColorpicker()
+end
+
+g=false
+end
+
+
+if c._active_dropdown then
+local q=c._active_dropdown.choices
+local r=c._active_dropdown.multi
+local s=c._active_dropdown.callback
+local t=c._active_dropdown.position
+local u=c._active_dropdown.w
+local v=c._active_dropdown._drawings
+
+local w=v[1]
+local x=v[2]
+local y=v[3]
+
+local z=c._padding
+local A=g
+local B=1
+for C,D in pairs(q)do local
+E, F=c._GetTextBounds(C)
+local G=v[3+B]
+
+local H=t+Vector2.new(c._padding,z)
+local I=Vector2.new(u,F+c._padding)
+
+G.Position=H
+G.Color=D and c._color_accent or c._color_text
+G.Text=C
+G.Visible=k
+
+if g and c._IsMouseWithinBounds(H,I)then
+A=not r
+
+if not r then
+for J,K in pairs(q)do
+q[J]=false
+end
+end
+
+q[C]=not D
+if s then
+local J={}
+for K,L in pairs(q)do
+if L==true then
+table.insert(J,K)
+end
+end
+
+s(J)
+end
+end
+
+z=z+F*2+c._padding
+B=B+1
+end
+
+if A then
+c:_RemoveDropdown()
+else
+w.Position=t
+w.Size=Vector2.new(u,z)
+w.Transparency=j
+w.Visible=k
+w.Color=c._color_surface
+
+x.Position=t
+x.Size=Vector2.new(u,z)
+x.Transparency=j
+x.Visible=k
+x.Color=c._color_crust
+
+y.Position=t+Vector2.new(1,1)
+y.Size=Vector2.new(u-2,z-2)
+y.Transparency=j
+y.Visible=k
+y.Color=c._color_border
+end
+
+g=false
+end
+
+
+local q=c._tree._drawings[1]
+local r=c._tree._drawings[2]
+local s=c._tree._drawings[3]
+local t=c._tree._drawings[4]
+local u=c._tree._drawings[5]
+
+s.Position=Vector2.new(c.x,c.y)
+s.Size=Vector2.new(c.w,c.h)
+s.Transparency=j
+s.Visible=k
+s.Color=c._color_surface
+
+r.Position=Vector2.new(c.x+1,c.y+1)
+r.Size=Vector2.new(c.w-2,c.h-2)
+r.Transparency=j
+r.Visible=k
+r.Color=c._color_border
+
+q.Position=Vector2.new(c.x,c.y)
+q.Size=Vector2.new(c.w,c.h)
+q.Transparency=j
+q.Visible=k
+q.Color=c._color_crust
+
+t.Position=Vector2.new(c.x+2,c.y+2)
+t.Size=Vector2.new(c.w-4,c._title_h-4)
+t.Transparency=j
+t.Visible=k
+t.Color=c._color_border local
+
+v, w=c._GetTextBounds''
+u.Position=Vector2.new(c.x+7,c.y+c._title_h/2-w+2)
+u.Transparency=j
+u.Visible=k
+u.Color=c._color_text
+
+
+local x=Vector2.new(c.x,c.y)
+local y=Vector2.new(c.w,c._title_h)
+
+if c._IsMouseWithinBounds(x,y)then
+if g then
+c._dragging=true
+c._drag_offset=e-x
+end
+end
+
+if c._dragging then
+if i then
+c.x=e.x-c._drag_offset.x
+c.y=e.y-c._drag_offset.y
+else
+c._dragging=false
+end
+
+g=false
+end
+
+
+local z=#c._tree._tabs
+for A,B in ipairs(c._tree._tabs)do
+local C=B.name
+local D=B._drawings
+local E=c._active_tab==C
+
+local F=D[1]
+local G=D[2]
+local H=D[3]
+local I=D[4]
+
+local J=(c.w-c._padding*2-(z-1)*2)/z
+local K=c._tab_h
+
+local L=Vector2.new(c.x+c._padding+(A-1)*(J+2),c.y+c._title_h+c._padding)
+local M=Vector2.new(J,K)
+
+F.Position=L
+F.Size=M
+F.Transparency=j
+F.Visible=k
+F.Color=c._color_border
+
+G.Position=L+Vector2.new(0,K-8)
+G.Size=Vector2.new(J,8)
+G.Transparency=0.05*j
+G.Visible=k
+
+H.Position=L
+H.Size=Vector2.new(J,1)
+H.Transparency=j
+H.Visible=E and k
+H.Color=c._color_accent
+
+I.Position=L+Vector2.new(4,K/2-ESP_FONTSIZE/2)
+I.Transparency=j
+I.Visible=k
+I.Color=c._color_text
+
+
+if g and c._IsMouseWithinBounds(L,M)then
+c._active_tab=C
+end
+
+
+local N=c._padding
+local O=c._padding
+for P,Q in ipairs(B._sections)do
+local R=Q._drawings
+local S=Q._items
+
+
+for T,U in ipairs(S)do
+local V=U.type
+local W=U.value
+local X=U.callback
+
+if V=='key'then
+if W and W~='unbound'and X then
+local Y=U.mode
+local Z=U.state
+if Y=='Hold'then
+Z=c._inputs[W].held
+elseif Y=='Toggle'and c._inputs[W].click then
+Z=not Z
+elseif Y=='Always'then
+Z=true
+end
+
+if Z~=U.state then
+X(Z)
+
+U.state=Z
+end
+end
+end
+end
+
+if E then
+local T=c._padding*2
+local U=(P+1)%2
+
+local V=c.w/2-c._padding*1.5
+local W=Vector2.new(
+c.x+c._padding+c._padding*U+V*U,
+c.y+c._title_h+c._tab_h+c._padding*2+(U==1 and N or O)
+)
+
+
+for X,Y in ipairs(S)do
+local Z=Y.type
+local _=Y._drawings
+local aa=Y.value
+local ab=Y.callback
+
+local ac=W+Vector2.new(10,T)
+
+if Z=='checkbox'then
+local ad=_[1]
+local ae=_[2]
+local af=_[3]
+local ag=_[4]
+
+local ah=Vector2.new(14,14)
+ad.Position=ac
+ad.Size=ah
+ad.Transparency=j
+ad.Visible=k
+
+ae.Position=ac+Vector2.new(1,1)
+ae.Size=ah-Vector2.new(2,2)
+ae.Transparency=j
+ae.Visible=aa==true and k
+ae.Color=c._color_accent
+
+af.Position=ac+Vector2.new(1,ah.y-2)
+af.Size=Vector2.new(ah.x-2,1)
+af.Transparency=0.3*j
+af.Visible=aa==true and k
+af.Color=c._color_border
+
+ag.Position=ac+Vector2.new(ah.x+8,0)
+ag.Transparency=j
+ag.Visible=k
+ag.Color=c._color_text
+
+
+if c._IsMouseWithinBounds(ac,ah)then
+ad.Color=c._color_accent
+
+if g then
+Y.value=not Y.value
+
+if ab then
+ab(Y.value)
+end
+end
+else
+ad.Color=c._color_crust
+end
+
+T=T+ah.y+8
+elseif Z=='slider'then
+local ad=_[1]
+local ae=_[2]
+local af=_[3]
+local ag=_[4]
+local ah=_[5]
+
+local ai=Y.min
+local aj=Y.max
+local ak=Y.step
+local al=Y.appendix
+
+local am=V-c._padding*3
+local an=20
+local ao=Vector2.new(am,an)local
+
+ap, aq=c._GetTextBounds''
+ah.Position=ac
+ah.Transparency=j
+ah.Visible=k
+ah.Color=c._color_text
+
+ad.Position=ac+Vector2.new(0,aq+10)
+ad.Size=ao
+ad.Transparency=j
+ad.Visible=k
+ad.Color=c._color_crust
+
+local ar=aa~=ai and k
+local as=(aa-(Y.min or 0))/((Y.max or 1)-(Y.min or 0))
+as=clamp(as,0,1)
+ae.Position=ac+Vector2.new(1,aq+11)
+ae.Size=Vector2.new(math.max(am*as-2,0),an-2)
+ae.Transparency=j
+ae.Visible=ar
+ae.Color=c._color_accent
+
+af.Position=ac+Vector2.new(1,aq+an+7)
+af.Size=Vector2.new(math.max(am*as-2,0),2)
+af.Transparency=0.15*j
+af.Visible=ar
+
+local at=tostring(aa)..(al or'')
+local au,av=c._GetTextBounds(at)
+ag.Position=ac+Vector2.new(am-au-6,av/2+an-2)
+ag.Text=at
+ag.Transparency=j
+ag.Visible=k
+
+
+if c._IsMouseWithinBounds(ac+Vector2.new(0,aq+10),ao)then
+ag.Color=c._color_accent
+
+if i then
+local aw=e.x-ac.x
+local ax=aw/am
+ax=clamp(ax,0,1)
+
+local ay=ai+(aj-ai)*ax
+ay=math.floor((ay/ak)+0.5)*ak
+
+ay=math.max(ai,math.min(aj,ay))
+if ay~=Y.value then
+Y.value=ay
+
+if ab then
+ab(ay)
+end
+end
+end
+else
+ag.Color=c._color_text
+end
+
+T=T+an+18+aq
+elseif Z=='choice'then
+local ad=_[1]
+local ae=_[2]
+local af=_[3]
+local ag=_[4]
+local ah=_[5]
+
+local ai=Y.choices
+local aj=Y.multi local
+
+ak, al=c._GetTextBounds''
+local am=V-c._padding*3
+local an=20
+local ao=Vector2.new(am,an)
+local ap=ac+Vector2.new(0,al+10)
+
+ah.Position=ac
+ah.Transparency=j
+ah.Visible=k
+ah.Color=c._color_text
+
+local aq=table.concat(aa,', ')local
+ar=c._GetTextBounds(aq)
+af.Position=ac+Vector2.new(4,al/2+an-2)
+af.Text=ar>am-32 and'...'or aq
+af.Transparency=j
+af.Visible=k
+af.Color=c._color_text
+
+ad.Position=ap
+ad.Size=ao
+ad.Transparency=j
+ad.Visible=k
+
+ae.Position=ap+Vector2.new(2,2)
+ae.Size=ao-Vector2.new(4,4)
+ae.Transparency=j
+ae.Visible=k
+ae.Color=c._color_crust
+
+local as='<'
+local at,au=c._GetTextBounds(as)
+ag.Position=ac+Vector2.new(am-at-4,au/2+an-2)
+ag.Text=as
+ag.Transparency=j
+ag.Visible=k
+ag.Color=c._color_text
+
+
+if c._IsMouseWithinBounds(ap,ao)then
+ad.Color=c._color_accent
+
+if g then
+local av=function(av)
+Y.value=av
+
+if ab then
+ab(Y.value)
+end
+end
+
+c:_SpawnDropdown(aa,ai,aj,av,ap+Vector2.new(0,an),am)
+elseif h then
+local av=function(av)
+Y.value={}
+ab(Y.value)
+end
+
+c:_SpawnDropdown({},{'Clear'},false,av,e,60)
+
+end
+else
+ad.Color=c._color_crust
+end
+
+T=T+an+18+al
+elseif Z=='button'then
+local ad=_[1]
+local ae=_[2]
+local af=_[3]
+
+local ag=Y.label
+
+local ah,ai=c._GetTextBounds(ag)
+local aj=Vector2.new(ah+c._padding*2,20)
+af.Position=ac+Vector2.new(c._padding,4)
+af.Transparency=j
+af.Visible=k
+af.Color=c._color_text
+
+ad.Position=ac
+ad.Size=aj
+ad.Transparency=j
+ad.Visible=k
+
+ae.Position=ac+Vector2.new(2,2)
+ae.Size=aj-Vector2.new(4,4)
+ae.Transparency=j
+ae.Visible=k
+ae.Color=c._color_crust
+
+
+if c._IsMouseWithinBounds(ac,aj)then
+if g and ab then
+ab(Y.value)
+end
+
+ad.Color=c._color_accent
+else
+ad.Color=c._color_crust
+end
+
+T=T+22+ai
+elseif Z=='colorpicker'then
+local ad=_[1]
+local ae=_[2]
+local af=_[3]
+local ag=_[4]
+
+local ah=Vector2.new(30,14)
+local ai=ac+Vector2.new(V-ah.x-c._padding*3,0)
+ad.Position=ai
+ad.Size=ah
+ad.Transparency=j
+ad.Visible=k
+ad.Color=c._color_crust
+
+ae.Position=ai+Vector2.new(1,1)
+ae.Size=ah-Vector2.new(2,2)
+ae.Transparency=j
+ae.Color=Color3.fromRGB(unpack(Y.value))
+ae.Visible=k
+
+af.Position=ai+Vector2.new(4,4)
+af.Size=ah-Vector2.new(8,8)
+af.Transparency=j*0.25
+af.Visible=k
+
+ag.Position=ac
+ag.Transparency=j
+ag.Visible=k
+ag.Color=c._color_text
+
+
+if c._IsMouseWithinBounds(ai,ah)then
+if g then
+local aj=function(aj)
+Y.value=aj
+
+if ab then
+ab(Color3.fromRGB(unpack(Y.value)))
+end
+end
+
+c:_SpawnColorpicker(Y.value,Y.label,aj)
+elseif h then
+c:_SpawnDropdown({},{'Copy','Paste'},false,function(aj)
+local ak=aj[1]
+if ak=='Copy'then
+c._clipboard_color=aa
+elseif ak=='Paste'then
+Y.value=c._clipboard_color or aa
+if ab then
+ab(Color3.fromRGB(unpack(Y.value)))
+end
+end
+end,e,60)
+end
+end
+
+T=T+ah.y+10
+elseif Z=='key'then
+local ad=_[1]
+local ae=_[2]
+local af=_[3]
+local ag=_[4]
+
+local ah=Y._listening==true and'...'or aa:upper()
+local ai,aj=c._GetTextBounds(ah)
+local ak=Vector2.new(ai+c._padding*2,20)
+local al=ac+Vector2.new(V-ak.x-c._padding*3,0)
+ag.Position=al+Vector2.new(c._padding,4)
+ag.Transparency=j
+ag.Text=ah
+ag.Visible=k
+ag.Color=c._color_text
+
+ae.Position=al
+ae.Size=ak
+ae.Transparency=j
+ae.Visible=k
+
+af.Position=al+Vector2.new(2,2)
+af.Size=ak-Vector2.new(4,4)
+af.Transparency=j
+af.Visible=k
+af.Color=c._color_crust
+
+ad.Position=ac+Vector2.new(0,aj/2+1)
+ad.Transparency=j
+ad.Visible=k
+ad.Color=c._color_text
+
+
+if c._IsMouseWithinBounds(al,ak)then
+if g then
+Y._listening=true
+c._inputs.m1.click=false
+end
+
+ae.Color=c._color_accent
+else
+ae.Color=c._color_crust
+end
+
+if Y._listening then
+for am,an in pairs(c._inputs)do
+if an.click then
+Y.value=am
+Y._listening=false
+
+break
+end
+end
+end
+
+T=T+22+aj
+end
+end
+
+
+local aa=R[1]
+local ab=R[2]
+local ac=R[3]
+local ad=R[4]
+
+ab.Position=W
+ab.Size=Vector2.new(V,T)
+ab.Transparency=j
+ab.Visible=k
+ab.Color=c._color_crust
+
+ac.Position=W+Vector2.new(1,1)
+ac.Size=Vector2.new(V-2,T-2)
+ac.Transparency=j
+ac.Visible=k
+ac.Color=c._color_overlay local
+
+ae, af=c._GetTextBounds''
+ad.Position=W+Vector2.new(10,-af/2)
+ad.Transparency=j
+ad.Visible=k
+ad.Color=c._color_text
+
+aa.Visible=false
+
+T=T+c._padding
+if U==1 then
+N=N+T
+else
+O=O+T
+end
+else
+
+undrawAll(R)
+
+
+for aa,ab in ipairs(S)do
+undrawAll(ab._drawings)
+end
+end
+end
+end
+
+
+c._tick=os.clock()
+end
+
+function UILib.Destroy(aa)
+
+for ab,ac in pairs(aa._tree._drawings)do
+ac:Remove()
+end
+
+
+aa:_RemoveDropdown()
+aa:_RemoveColorpicker()
+
+
+for ab,ac in pairs(aa._tree._tabs)do
+if ac._drawings then
+for ad,ae in pairs(ac._drawings)do
+ae:Remove()
+end
+end
+
+if ac._sections then
+for ad,ae in pairs(ac._sections)do
+for af,ag in pairs(ae._drawings)do
+ag:Remove()
+end
+
+if ae._items then
+for af,ag in pairs(ae._items)do
+for ah,ai in pairs(ag._drawings)do
+ai:Remove()
+end
+end
+end
+end
+end
+end
+
+aa._tree=nil
+setrobloxinput(true)
+end
+
+
+
+
+
+
+
+
+local aa=game:GetService"Players"
+local ab=aa.LocalPlayer
+ab:GetMouse()
+
+
+
+
+local ac={
+enabled=true,
+postPressDelay=0.35,
+}
+
+
+local ad={
+detectedKey="",
+detectedTime=0,
+displayDuration=1.0
+}
+
+
+
+
+local ae={
+enabled=true,
+
+baseDelay=0.60,
+minDelay=0.40,
+healthFloor=0.60,
+
+searchInterval=0.05,
+}
+
+
+local af={
+"Cleaving Whirlwind",
+"Severance Kick",
+"Blunt Cut",
+"Stabalize"
+}
+
+
+local ag={
+
+rWasPressed=false,
+
+
+isScanning=false,
+scanStartTime=0,
+
+trackedTarget=nil,
+trackedRatioValue=nil,
+qteDetectedTime=0,
+hasTriggered=false,
+
+
+targetHealthPercent=1.0,
+calculatedDelay=0.60,
+
+
+lastTriggerTime=0,
+triggerCooldown=0.3,
+}
+
+
+
+
+local ah={
+enabled=true,
+dummy_enabled=true,
+items_enabled=true,
+
+
+colorDummy={255,100,100},
+colorItems={100,255,100}
+}
+
+
+local ai={
+objects={},
+lastDiscovery=0
+}
+
+
+
+
+local aj={
+W=0x57,
+A=0x41,
+S=0x53,
+D=0x44,
+F=0x46,
+R=0x52
+}
+
+
+local ak={W=
+aj.W,A=
+aj.A,S=
+aj.S,D=
+aj.D
+}
+
+
+
+
+local function GetTime()
+return os.clock()
+end
+
+
+local function SafeFind(al,...)
+if not al then return nil end
+for am,an in ipairs{...}do
+al=al:FindFirstChild(an)
+if not al then return nil end
+end
+return al
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function GetQTELabel()
+local al,am=pcall(function()
+local al=ab:FindFirstChild"PlayerGui"
+if not al then return nil end
+
+local am=al:FindFirstChild"QTE"
+if not am then return nil end
+
+return am:FindFirstChild"QTE_PC"
+end)
+
+if not al then return nil end
+return am
+end
+
+
+local function IsFKeyHeld()
+return iskeypressed(aj.F)
+end
+
+
+local function PressKey(al)
+keypress(al)
+keyrelease(al)
+end
+
+
+local function ProcessQTE()
+if not ac.enabled then return false end
+
+
+if IsFKeyHeld()then return false end
+
+local al=GetQTELabel()
+if not al then return false end
+
+
+local am=al.Text
+if not am or am==""then return false end
+
+
+local an=am:upper()
+local ao=ak[an]
+if not ao then return false end
+
+
+local ap=GetTime()
+ad.detectedKey=an
+ad.detectedTime=ap
+
+
+PressKey(ao)
+
+return true
+end
+
+
+
+
+
+
+local function HasSalarymanMoveset()
+local al,am=pcall(function()
+local al=game.Workspace:FindFirstChild"Characters"
+if not al then return false end
+
+local am=al:FindFirstChild(ab.Name)
+if not am then return false end
+
+local an=am:FindFirstChild"Moveset"
+if not an then return false end
+
+for ao,ap in ipairs(af)do
+if an:FindFirstChild(ap)then
+return true
+end
+end
+return false
+end)
+
+if not al then return false end
+return am
+end
+
+
+
+
+local function FindOurRatioQTE()
+local al=game.Workspace:FindFirstChild"Characters"
+if not al then return nil,nil end
+
+local am=ab.Name
+
+
+for an,ao in ipairs(al:GetChildren())do
+local ap=ao:FindFirstChild"Info"
+if ap then
+local aq=ap:FindFirstChild"Ratio"
+if aq then
+local ar=aq:FindFirstChild"Owner"
+if ar then
+local as=ar.Value
+
+if as then
+
+local at
+
+
+local au,av=pcall(function()
+return as.Name
+end)
+if au and av then
+at=av
+end
+
+
+if not at and type(as)=="string"then
+local aw=as:match".*%.(.*)"
+if aw then
+at=aw
+end
+end
+
+
+if at and at==am then
+return ao,aq
+end
+end
+end
+end
+end
+end
+
+return nil,nil
+end
+
+
+local function IsRatioQTEActive(al)
+if not al then return false end
+if not al.Parent then return false end
+
+
+local am=al:GetAttribute"Activated"
+if am==false then
+return false
+end
+
+return true
+end
+
+
+local function GetTargetHealthPercent(al)
+if not al then return 1.0 end
+
+local am,an=pcall(function()
+local am=al:FindFirstChild"Humanoid"
+if am then
+local an=am.Health
+local ao=am.MaxHealth
+if ao>0 then
+return an/ao
+end
+end
+return 1.0
+end)
+
+if not am then return 1.0 end
+return an
+end
+
+
+
+
+
+local function CalculatePressDelay(al)
+local am=ae.baseDelay
+local an=ae.minDelay
+local ao=ae.healthFloor
+
+
+local ap=math.max(al,ao)
+
+
+
+
+local aq=(ap-ao)/(1.0-ao)
+aq=math.max(0,math.min(1,aq))
+
+
+local ar=an+(am-an)*aq
+
+return ar
+end
+
+
+local function ProcessRatioQTE()
+if not ae.enabled then return end
+if not HasSalarymanMoveset()then return end
+
+local al=GetTime()
+local am=iskeypressed(aj.R)
+
+
+if am and not ag.rWasPressed then
+ag.isScanning=true
+ag.scanStartTime=al
+ag.trackedTarget=nil
+ag.trackedRatioValue=nil
+ag.hasTriggered=false
+end
+ag.rWasPressed=am
+
+
+if not ag.isScanning and not ag.trackedRatioValue then
+return
+end
+
+
+if ag.isScanning then
+
+if al-ag.scanStartTime>2.0 then
+ag.isScanning=false
+return
+end
+
+
+local an,ao,ap=pcall(FindOurRatioQTE)
+if an and ao and ap then
+ag.isScanning=false
+ag.trackedTarget=ao
+ag.trackedRatioValue=ap
+ag.qteDetectedTime=al
+ag.hasTriggered=false
+
+
+ag.targetHealthPercent=GetTargetHealthPercent(ao)
+ag.calculatedDelay=CalculatePressDelay(ag.targetHealthPercent)
+end
+return
+end
+
+
+if ag.trackedRatioValue then
+
+if not IsRatioQTEActive(ag.trackedRatioValue)then
+ag.trackedTarget=nil
+ag.trackedRatioValue=nil
+ag.hasTriggered=false
+return
+end
+
+
+if ag.hasTriggered then return end
+
+
+if al-ag.lastTriggerTime<ag.triggerCooldown then
+return
+end
+
+
+local an=al-ag.qteDetectedTime
+
+if an>=ag.calculatedDelay then
+
+keypress(aj.R)
+keyrelease(aj.R)
+
+ag.hasTriggered=true
+ag.lastTriggerTime=al
+end
+end
+end
+
+
+
+
+
+
+
+local function CreateESPDrawing(al,am)
+local an=Drawing.new"Text"
+an.Font=Drawing.Fonts.System
+an.Text=al
+an.Color=Color3.fromRGB(am[1],am[2],am[3])
+an.Outline=true
+an.Center=true
+an.Visible=false
+return an
+end
+
+
+local function RemoveESPDrawing(al)
+if al and al.drawing then
+al.drawing:Remove()
+end
+end
+
+
+local function ClearAllESP()
+for al,am in pairs(ai.objects)do
+RemoveESPDrawing(am)
+end
+ai.objects={}
+end
+
+
+
+
+local function UpdateESPPositions()
+if not ah.enabled then
+for al,am in pairs(ai.objects)do
+if am.drawing then
+am.drawing.Visible=false
+end
+end
+return
+end
+
+for al,am in pairs(ai.objects)do
+if am.drawing then
+
+local an=false
+if am.type=="dummy"then
+an=ah.dummy_enabled
+elseif am.type=="item"then
+an=ah.items_enabled
+end
+
+if not an then
+am.drawing.Visible=false
+continue
+end
+
+
+local ao
+if am.part and am.part.Parent then
+ao=am.part.Position
+end
+
+if ao then
+local ap,aq=WorldToScreen(ao)
+
+if aq then
+am.drawing.Position=ap
+am.drawing.Visible=true
+
+
+if am.type=="dummy"then
+am.drawing.Color=Color3.fromRGB(ah.colorDummy[1],ah.colorDummy[2],ah.colorDummy[3])
+elseif am.type=="item"then
+am.drawing.Color=Color3.fromRGB(ah.colorItems[1],ah.colorItems[2],ah.colorItems[3])
+end
+else
+am.drawing.Visible=false
+end
+else
+am.drawing.Visible=false
+end
+end
+end
+end
+
+
+
+
+
+
+local function DiscoverDummy()
+local al="dummy_character"
+
+
+if ai.objects[al]then
+local am=ai.objects[al]
+if not am.part or not am.part.Parent then
+RemoveESPDrawing(am)
+ai.objects[al]=nil
+else
+return
+end
+end
+
+
+local am=SafeFind(game.Workspace,"Characters","Dummy")
+if not am then return end
+
+
+local an=am:FindFirstChild"HumanoidRootPart"
+if not an then return end
+
+
+local ao=CreateESPDrawing("Dummy",ah.colorDummy)
+local ap={
+drawing=ao,
+instance=am,
+part=an,
+type="dummy",
+name="Dummy"
+}
+ai.objects[al]=ap
+end
+
+
+local function DiscoverItems()
+local al=SafeFind(game.Workspace,"Items")
+if not al then return end
+
+local am={}
+
+
+for an,ao in ipairs(al:GetChildren())do
+
+if ao:IsA"Part"or ao:IsA"MeshPart"then
+local ap=ao.Address
+am[ap]=true
+
+
+if ai.objects[ap]then
+continue
+end
+
+
+local aq=CreateESPDrawing(ao.Name,ah.colorItems)
+local ar={
+drawing=aq,
+instance=ao,
+part=ao,
+type="item",
+name=ao.Name
+}
+ai.objects[ap]=ar
+end
+end
+
+
+for an,ao in pairs(ai.objects)do
+if ao.type=="item"then
+if not am[an]then
+RemoveESPDrawing(ao)
+ai.objects[an]=nil
+end
+end
+end
+end
+
+
+local function DiscoverESPObjects()
+pcall(DiscoverDummy)
+pcall(DiscoverItems)
+end
+
+
+
+
+local function GetStatus()
+local al={}
+
+if ac.enabled then
+local am=GetTime()
+if IsFKeyHeld()then
+table.insert(al,"QTE: PAUSED")
+elseif ad.detectedKey~=""and(am-ad.detectedTime)<ad.displayDuration then
+table.insert(al,"QTE: "..ad.detectedKey)
+else
+table.insert(al,"QTE: ON")
+end
+end
+
+if ae.enabled then
+if ag.isScanning then
+table.insert(al,"Ratio: SCAN")
+elseif ag.trackedRatioValue then
+table.insert(al,"Ratio: ACTIVE")
+else
+table.insert(al,"Ratio: ON")
+end
+end
+
+if ah.enabled then
+local am=0
+for an in pairs(ai.objects)do am=am+1 end
+table.insert(al,"ESP: "..am)
+end
+
+if#al==0 then
+return"Idle"
+end
+
+return table.concat(al," | ")
+end
+
+
+
+
+local al=UILib.new("JJSQTE Enhanced",Vector2.new(300,420),{GetStatus})
+
+
+local am=al:Tab"QTE"
+local an=al:Section(am,"QTE Auto Press")
+
+al:Checkbox(am,an,"Enable QTE Auto",ac.enabled,function(ao)
+ac.enabled=ao
+end)
+
+al:Slider(am,an,"Post-Press Delay",ac.postPressDelay*1000,function(ao)
+ac.postPressDelay=ao/1000
+end,100,500,10,"ms")
+
+
+local ao=al:Section(am,"Salaryman Ratio QTE")
+
+al:Checkbox(am,ao,"Enable Ratio QTE",ae.enabled,function(ap)
+ae.enabled=ap
+if not ap then
+
+ag.trackedTarget=nil
+ag.trackedRatioValue=nil
+ag.isScanning=false
+ag.hasTriggered=false
+end
+end)
+
+
+local ap=al:Tab"ESP"
+local aq=al:Section(ap,"ESP Settings")
+
+al:Checkbox(ap,aq,"Enable ESP",ah.enabled,function(ar)
+ah.enabled=ar
+if not ar then
+for as,at in pairs(ai.objects)do
+if at.drawing then
+at.drawing.Visible=false
+end
+end
+end
+end)
+
+al:Checkbox(ap,aq,"Dummy ESP",ah.dummy_enabled,function(ar)
+ah.dummy_enabled=ar
+end)
+
+al:Checkbox(ap,aq,"Items ESP",ah.items_enabled,function(ar)
+ah.items_enabled=ar
+end)
+
+
+local ar=al:Section(ap,"ESP Colors")
+
+al:Colorpicker(ap,ar,"Dummy Color",ah.colorDummy,function(as)
+ah.colorDummy=as
+end)
+
+al:Colorpicker(ap,ar,"Items Color",ah.colorItems,function(as)
+ah.colorItems=as
+end)
+
+
+al:CreateSettingsTab"Settings"
+
+
+local as=al:Tab"Utils"
+local at=al:Section(as,"Script")
+
+local au=true
+
+al:Checkbox(as,at,"Unload Script",false,function(av)
+if av then
+au=false
+ClearAllESP()
+al:Destroy()
+print"[JJSQTE] Unloaded"
+end
+end)
+
+
+
+
+print"[JJSQTE Enhanced] Loaded successfully!"
+print"[JJSQTE Enhanced] Features:"
+print"  - QTE Auto Press (WASD) - Hold F to pause"
+print"  - Salaryman Ratio QTE (Health-based timing)"
+print"  - Dummy ESP (Workspace/Characters/Dummy)"
+print"  - Items ESP (Workspace/Items)"
+
+
+
+
+
+
+spawn(function()
+while au do
+al:Step()
+task.wait()
+end
+end)
+
+
+spawn(function()
+while au do
+if ac.enabled and not IsFKeyHeld()then
+local av=pcall(function()
+local av=ProcessQTE()
+if av then
+
+task.wait(ac.postPressDelay)
+else
+
+task.wait(0.05)
+end
+end)
+if not av then
+task.wait(0.1)
+end
+else
+task.wait(0.1)
+end
+end
+end)
+
+
+spawn(function()
+while au do
+pcall(UpdateESPPositions)
+task.wait()
+end
+end)
+
+
+spawn(function()
+while au do
+pcall(DiscoverESPObjects)
+task.wait(0.5)
+end
+end)
+
+
+spawn(function()
+while au do
+pcall(ProcessRatioQTE)
+task.wait()
+end
+end)
+
+
+while au do
+task.wait(0.1)
+end
+
+print"[JJSQTE Enhanced] Script stopped"
