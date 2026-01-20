@@ -1,0 +1,1467 @@
+
+
+
+
+
+
+
+
+
+
+
+local a={}
+do
+a.__index=a
+
+local b=game.Players
+local c=b.LocalPlayer
+local d=c:GetMouse()
+
+local e=os.clock
+local f=Color3.fromRGB
+local g=Vector2.new
+
+local h={
+mocha={
+crust=f(17,17,27),
+mantle=f(24,24,37),
+base=f(30,30,46),
+surface0=f(49,50,68),
+surface1=f(69,71,90),
+surface2=f(88,91,112),
+overlay0=f(108,112,134),
+overlay1=f(127,132,156),
+overlay2=f(147,153,178),
+subtext0=f(166,173,200),
+subtext1=f(186,194,222),
+text=f(205,214,244),
+
+rosewater=f(245,224,220),
+flamingo=f(242,205,205),
+pink=f(245,194,231),
+mauve=f(203,166,247),
+red=f(243,139,168),
+maroon=f(235,160,172),
+peach=f(250,179,135),
+yellow=f(249,226,175),
+green=f(166,227,161),
+teal=f(148,226,213),
+sky=f(137,220,235),
+sapphire=f(116,199,236),
+blue=f(137,180,250),
+lavender=f(180,190,254),
+overlay=f(108,112,134),
+},
+
+latte={
+crust=f(220,224,232),
+mantle=f(230,233,239),
+base=f(239,241,245),
+surface0=f(204,208,218),
+surface1=f(188,192,204),
+surface2=f(172,176,190),
+overlay0=f(156,160,176),
+overlay1=f(140,143,161),
+overlay2=f(124,127,147),
+subtext0=f(108,111,133),
+subtext1=f(92,95,119),
+text=f(76,79,105),
+
+rosewater=f(220,138,120),
+flamingo=f(221,120,120),
+pink=f(234,118,203),
+mauve=f(136,57,239),
+red=f(210,15,57),
+maroon=f(230,69,83),
+peach=f(254,100,11),
+yellow=f(223,142,29),
+green=f(64,160,43),
+teal=f(23,146,153),
+sky=f(4,165,229),
+sapphire=f(32,159,181),
+blue=f(30,102,245),
+lavender=f(114,135,253),
+overlay=f(156,160,176),
+},
+
+macchiato={
+crust=f(24,25,38),
+mantle=f(30,32,48),
+base=f(36,39,58),
+surface0=f(54,58,79),
+surface1=f(73,77,100),
+surface2=f(91,96,120),
+overlay0=f(110,115,141),
+overlay1=f(128,135,162),
+overlay2=f(147,154,183),
+subtext0=f(165,173,206),
+subtext1=f(184,192,224),
+text=f(202,211,245),
+
+rosewater=f(244,219,214),
+flamingo=f(240,198,198),
+pink=f(245,189,230),
+mauve=f(198,160,246),
+red=f(237,135,150),
+maroon=f(238,153,160),
+peach=f(245,169,127),
+yellow=f(238,212,159),
+green=f(166,218,149),
+teal=f(139,213,202),
+sky=f(145,215,227),
+sapphire=f(125,196,228),
+blue=f(138,173,244),
+lavender=f(183,189,248),
+overlay=f(110,115,141),
+},
+
+frappe={
+crust=f(35,38,52),
+mantle=f(41,44,60),
+base=f(48,52,70),
+surface0=f(65,69,89),
+surface1=f(81,87,109),
+surface2=f(98,104,128),
+overlay0=f(115,121,148),
+overlay1=f(131,138,167),
+overlay2=f(148,156,187),
+subtext0=f(165,173,206),
+subtext1=f(198,208,245),
+text=f(202,211,245),
+
+rosewater=f(242,213,207),
+flamingo=f(238,190,190),
+pink=f(244,184,228),
+mauve=f(202,158,230),
+red=f(231,130,132),
+maroon=f(234,153,156),
+peach=f(239,159,118),
+yellow=f(229,200,144),
+green=f(166,209,137),
+teal=f(129,200,190),
+sky=f(153,209,219),
+sapphire=f(133,193,220),
+blue=f(140,170,238),
+lavender=f(186,187,241),
+overlay=f(115,121,148),
+},
+}
+
+local function mp()
+return g(d.X,d.Y)
+end
+
+local function mousebound(i,j)
+local k=mp()
+return k.x>=i.x and k.x<=(i.x+j.x)and k.y>=i.y and k.y<=(i.y+j.y)
+end
+
+local function change(i,j)
+if typeof(i)=="table"and#i>1 then
+for k,l in i do
+for m,n in j do
+l[m]=n
+end
+end
+else
+for k,l in j do
+i[k]=l
+end
+end
+end
+
+local function create(i,j)
+local k=Drawing.new(i)
+change(k,j)
+return k
+end
+
+local function lerp(i,j,k)
+return i+(j-i)*k
+end
+
+local function getLerp(i,j)
+return 1-(0.5^(j*i*60))
+end
+
+local function lerpRGB(i,j,k)
+local l,m=pcall(function()
+return f(
+math.floor(lerp(i.R*255,j.R*255,k)),
+math.floor(lerp(i.G*255,j.G*255,k)),
+math.floor(lerp(i.B*255,j.B*255,k))
+)
+end)
+if l then return m end
+if not l then return i end
+end
+
+local function textbound(i)
+return#i*7,7
+end
+
+local function centertext(i,j,k)
+local l,m=textbound(i)
+return g(
+j.X+(k.X-l)/2,
+j.Y+(k.Y-m*1.5)/2
+)
+end
+
+local function createGradient(i,j,k,l)
+local m=j
+local n=k
+local o={}
+
+if not i.Position then i.Position=g()end
+if not i.Size then i.Size=g()end
+
+local p=i.Size.Y/l
+
+for q=0,l-1 do
+local r=q/(l-1)
+local s=lerpRGB(m,n,r)
+
+local t=Drawing.new"Square"
+t.Filled=true
+t.Color=s
+t.Size=Vector2.new(i.Size.X,p+1)
+t.Position=Vector2.new(i.Position.X,i.Position.Y+(q*p))
+table.insert(o,t)
+end
+
+return setmetatable({
+Remove=function()
+for q,r in o do r:Remove()end
+end,
+ChangeColor=function(q,r)
+m=q
+n=r
+
+for s,t in o do
+local u=s/(l-1)
+local v=lerpRGB(m,n,u)
+
+t.Color=v
+end
+end
+},{
+__index=function(q,r)
+if r=="Size"then return i.Size end
+return o[1][r]
+end,
+__newindex=function(q,r,s)
+for t,u in o do
+if r=="Size"then
+i.Size=s
+p=i.Size.Y/l
+u.Size=g(s.X,p+1)
+u.Position=g(i.Position.X,i.Position.Y+(t*p))
+elseif r=="Position"then
+i.Position=s
+u.Position=g(i.Position.X,i.Position.Y+(t*p))
+elseif r~="Color"then
+u[r]=s
+end
+end
+end
+})
+end
+
+local function createOutline(i,j,k)
+local l=Drawing.new"Square"
+change(l,{
+Position=i.Position+Vector2.new(1,1),
+Size=i.Size+Vector2.new(-2,-2),
+Filled=true,
+Color=j or f(148,156,187),
+ZIndex=k or-1
+})
+return l
+end
+
+function a.create(i,j,k)
+local l=setmetatable({},a)
+local m=k or{}
+
+l.keys={
+delete={mem=0x2E},
+minus={mem=0xBD},
+mouse1={mem=0x01},
+mouse2={mem=0x02},
+mouse3={mem=0x04},
+leftshift={mem=0xA0},
+["0"]={mem=0x30},
+["1"]={mem=0x31},
+["2"]={mem=0x32},
+["3"]={mem=0x33},
+["4"]={mem=0x34},
+["5"]={mem=0x35},
+["6"]={mem=0x36},
+["7"]={mem=0x37},
+["8"]={mem=0x38},
+["9"]={mem=0x39},
+a={mem=0x41},
+b={mem=0x42},
+c={mem=0x43},
+d={mem=0x44},
+e={mem=0x45},
+f={mem=0x46},
+g={mem=0x47},
+h={mem=0x48},
+i={mem=0x49},
+j={mem=0x4A},
+k={mem=0x4B},
+l={mem=0x4C},
+m={mem=0x4D},
+n={mem=0x4E},
+o={mem=0x4F},
+p={mem=0x50},
+q={mem=0x51},
+r={mem=0x52},
+s={mem=0x53},
+t={mem=0x54},
+u={mem=0x55},
+v={mem=0x56},
+w={mem=0x57},
+x={mem=0x58},
+y={mem=0x59},
+z={mem=0x5A},
+tab={mem=0x09},
+backspace={mem=0x08},
+numpad0={mem=0x60},
+numpad1={mem=0x61},
+numpad2={mem=0x62},
+numpad3={mem=0x63},
+numpad4={mem=0x64},
+numpad5={mem=0x65},
+numpad6={mem=0x66},
+numpad7={mem=0x67},
+numpad8={mem=0x68},
+numpad9={mem=0x69},
+multiply={mem=0x6A},
+add={mem=0x6B},
+separator={mem=0x6C},
+subtract={mem=0x6D},
+decimal={mem=0x6E},
+divide={mem=0x6F},
+f1={mem=0x70},
+f2={mem=0x71},
+f3={mem=0x72},
+f4={mem=0x73},
+f5={mem=0x74},
+f6={mem=0x75},
+f7={mem=0x76},
+f8={mem=0x77},
+f9={mem=0x78},
+f10={mem=0x79},
+f11={mem=0x7A},
+f12={mem=0x7B},
+f13={mem=0x7C},
+f14={mem=0x7D},
+f15={mem=0x7E},
+f16={mem=0x7F},
+f17={mem=0x80},
+f18={mem=0x81},
+f19={mem=0x82},
+f20={mem=0x83},
+f21={mem=0x84},
+f22={mem=0x85},
+f23={mem=0x86},
+f24={mem=0x87},
+numlock={mem=0x90},
+lcontrol={mem=0xA2},
+rcontrol={mem=0xA3},
+leftalt={mem=0xA4},
+rightalt={mem=0xA5},
+rshift={mem=0xA1},
+}
+
+for n,o in l.keys do
+o.click=false
+o.hold=false
+end
+
+l.w=500
+l.h=700
+
+if m.size then
+l.w=m.size.X
+l.h=m.size.Y
+end
+
+local n=(workspace.CurrentCamera.ViewportSize*.5)-(g(l.w,l.h)*.5)
+l.x=n.X
+l.y=n.Y
+
+l.name=j or"n/a"
+l.padding=3
+l.th=25
+l.taboffset=45
+
+l.tabs={}
+l.currenttab=1
+
+l.closebind="minus"
+
+l.transparency=0
+l.open=true
+l.running=true
+
+l.border=4
+
+l.colors=h[m.theme]or h.latte
+
+l._last=e()
+l._draggable=false
+
+local o=create("Square",{Filled=true,Color=l.colors.base})
+local p=createOutline(o,l.colors.crust,-1)
+
+local q=create("Square",{Filled=true,Color=l.colors.mantle})
+local r=create("Text",{Text=l.name,Color=l.colors.text,ZIndex=3,Outline=false})
+local s=createGradient({Position=g(l.x,l.y),Size=g(l.w,l.th)},l.colors.base,l.colors.surface0,25)
+local t=create("Line",{
+ZIndex=1,
+Thickness=2,
+})
+
+s.ZIndex=2
+
+l._dcache={o,p,q,r,s,t}
+
+l.theme=m.theme
+l.themenames={}
+for u,v in h do
+table.insert(l.themenames,u)
+end
+
+return l
+end
+
+function a.changeTheme(i,j)
+i.theme=j
+
+local k=h[j]
+i.colors=k
+for l,m in i.tabs do
+m.button.ChangeColor(k.base,k.crust)
+
+for n,o in m.sections do
+for p,q in o.sections do
+for r,s in q.elements do
+if s.class=="toggle"then
+s.togglebutton.ChangeColor(k.mantle,k.crust)
+elseif s.class=="keybind"then
+s.button.ChangeColor(k.mantle,k.crust)
+s.outline.Color=k.crust
+change({s.text,s.statetext},{
+Color=k.text
+})
+elseif s.class=="dropdown"then
+s.button.ChangeColor(k.mantle,k.crust)
+s.buttonoutline.Color=k.crust
+s.labeltext.Color=k.text
+s.valuetext.Color=k.subtext1
+s.arrow.Color=k.subtext1
+s.optionsContainer.Color=k.mantle
+s.optionsOutline.Color=i.colors.crust
+end
+end
+end
+end
+end
+
+i._dcache[1].Color=k.base
+i._dcache[2].Color=k.crust
+i._dcache[3].Color=k.mantle
+i._dcache[4].Color=k.text
+i._dcache[5].ChangeColor(i.colors.base,i.colors.surface0)
+i._dcache[6].Color=k.crust
+end
+
+local i=e()
+function a.step(j)
+
+
+i=e()
+
+local k=e()-j._last
+j._last=e()
+
+local l=mp()
+
+setrobloxinput(not j.open)
+
+for m,n in j.keys do
+local o=iskeypressed(n.mem)
+if o then
+if not n.hold and not n.click then
+n.click=true
+else
+n.click=false
+end
+
+n.hold=true
+else
+n.hold=false
+end
+end
+
+if j.keys[j.closebind].click then j.open=not j.open end
+
+if not j.open then j.keys.mouse1.click=false j.keys.mouse1.hold=false end
+
+local function fetchtrans(m)
+return lerp(m,j.transparency,getLerp(.35,k))
+end
+
+local m=j._dcache
+local n=j.colors
+
+
+
+local o=m[1]
+local p=m[2]
+local q=m[3]
+local r=m[4]
+local s=m[5]
+local t=m[6]
+
+change(o,{
+Position=g(j.x,j.y),
+Size=g(j.w,j.h)
+})
+
+change(p,{
+Position=g(j.x,j.y)-(g(.5,.5)*j.border),
+Size=g(j.w+j.border,j.h+j.border)
+})
+
+change(r,{
+Position=g(j.x+5,j.y+j.th/2-5)
+})
+
+change(q,{
+Position=g(j.x+j.padding/2,j.y+(j.th+j.taboffset)+j.padding/2),
+Size=g(j.w-j.padding,j.h-(j.th+j.taboffset)-j.padding)
+})
+
+change(s,{Position=g(j.x,j.y),Size=g(j.w,j.th)})
+change(t,{
+From=g(j.x,j.y+j.th+t.Thickness),
+To=g(j.x+j.w,j.y+j.th+t.Thickness),
+Color=n.crust
+})
+
+for u,v in m do
+v.Transparency=fetchtrans(v.Transparency)
+end
+
+j.transparency=j.open and(j.customtransparency or 1)or 0
+
+if mousebound(o.Position,g(j.w,j.th))and j.open then
+if j.keys.mouse1.click then
+j._dragging=true
+j._dragoffset=l-g(j.x,j.y)
+end
+end
+
+if j._dragging then
+if j.keys.mouse1.hold then
+j.x=l.x-j._dragoffset.x
+j.y=l.y-j._dragoffset.y
+else
+j._dragging=false
+end
+
+j.keys.mouse1.click=false
+end
+
+local u=(j.w-(j.padding*(#j.tabs+1)))/math.max(#j.tabs,1)
+local v=j.taboffset-j.padding
+
+for w,x in j.tabs do
+local y=j.x+j.padding+(w-1)*(u+j.padding)
+local z=j.y+j.th+j.padding+1
+
+change(x.button,{
+Position=g(y,z),
+Size=g(u,v-j.padding*2),
+Transparency=fetchtrans(x.button.Transparency),
+ZIndex=2
+})
+
+change(x.buttonoutline,{
+Position=x.button.Position-g(1,1),
+Size=x.button.Size+g(2,3),
+Transparency=fetchtrans(x.button.Transparency),
+Color=n.crust
+})
+
+if mousebound(x.button.Position,x.button.Size)and j.keys.mouse1.click then
+j.currenttab=w
+end
+
+change(x.text,{
+Position=g(y+5,z+(v/2)-6),
+Transparency=fetchtrans(x.text.Transparency),
+Color=(j.currenttab==w and n.text or n.subtext1)
+})
+
+if j.currenttab==w then
+setvisible(x.sections,true)
+x.button.ChangeColor(n.base,n.overlay)
+
+for A,B in x.sections do
+for C,D in B._dcache do
+D.Transparency=fetchtrans(D.Transparency)
+end
+
+local C=B.section_container
+local D=B.height
+D=q.Size.Y/(x.side[B.side])
+local E=q.Size.X/2-j.padding*2
+
+change(C,{
+Position=g(j.padding+q.Position.X+(B.side=="left"and 0 or E+j.padding*2),(j.padding+q.Position.Y)+(B.sideindex*D)),
+Size=g(E,D-j.padding*2),
+Color=n.base
+})
+
+change(B.section_outline,{
+Position=C.Position-g(1,1),
+Size=C.Size+g(2,2),
+Color=n.crust
+})
+
+change(B.buttonbg,{
+Position=C.Position,
+Size=g(C.Size.X,20),
+Color=n.crust
+})
+
+for F,G in B.sections do
+local H=G.elements
+local I=B.index==F
+
+local J=(C.Position.Y+B.buttonbg.Size.Y+j.padding/2)+1
+
+for K,L in H do
+if not I then
+L.ignoreVisible=true
+for M,N in L._dcache do
+N.Visible=false
+end
+continue
+else
+L.ignoreVisible=false
+end
+
+local M=L.class local N=
+L.callback local O=
+L._dcache local P=
+L.value
+local Q=C.Size
+local R=C.Position
+
+if M=="button"then
+local S=L.buttonbase
+local T=L.text
+local U=L.buttonoutline
+
+local V=L.height
+local W=Q.X-j.padding*2
+
+change(S,{
+Size=g(W-j.padding,V),
+Position=g(R.X+j.padding+1,J),
+Transparency=fetchtrans(S.Transparency)
+})
+S.ChangeColor(j.colors.mantle,j.colors.crust)
+change(T,{
+Position=centertext(T.Text,S.Position,S.Size),
+Transparency=fetchtrans(T.Transparency),
+Color=n.text
+})
+
+change(U,{
+Position=S.Position-g(1,1),
+Size=S.Size+g(2,3),
+Transparency=fetchtrans(U.Transparency),
+Color=n.crust
+})
+
+if mousebound(S.Position,S.Size)and j.keys.mouse1.click then
+L.callback()
+end
+
+J+=(L.height+j.padding*2)
+elseif M=="toggle"then
+local S=L.togglebutton
+local T=L.toggleoutline
+local U=L.text
+
+local V=L.height
+
+change(S,{
+Size=g(V,V),
+Position=g(R.X+j.padding+1,J),
+Transparency=fetchtrans(S.Transparency)
+})
+
+change(T,{
+Position=S.Position-g(1,1),
+Size=S.Size+g(2,3),
+Transparency=fetchtrans(T.Transparency),
+Color=n.crust
+})
+change(U,{
+Position=g(S.Position.X+V+j.padding*2,centertext(U.Text,S.Position,S.Size).Y),
+Transparency=fetchtrans(U.Transparency),
+Color=n.text
+})
+
+if mousebound(S.Position,S.Size)and j.keys.mouse1.click then
+L.state=not L.state
+L.callback(L.state)
+end
+
+if L.state then
+S.ChangeColor(j.colors.teal,j.colors.sapphire)
+else
+S.ChangeColor(j.colors.mantle,j.colors.crust)
+end
+
+J+=(V+j.padding*2)
+elseif M=="keybind"then
+local S=L.button
+local T=L.outline
+local U=L.text
+local V=L.statetext
+
+local W=L.height
+
+change(S,{
+Size=g(W+(textbound(L.state)),W),
+Position=g(R.X+j.padding+1,J),
+Transparency=fetchtrans(S.Transparency)
+})
+change(T,{
+Position=S.Position-g(1,1),
+Size=S.Size+g(2,3),
+Transparency=fetchtrans(T.Transparency)
+})
+change(U,{
+Position=g(S.Position.X+S.Size.X+j.padding*2,centertext(U.Text,S.Position,S.Size).Y),
+Transparency=fetchtrans(U.Transparency),
+})
+change(V,{
+Position=centertext(V.Text,S.Position,S.Size),
+Transparency=fetchtrans(V.Transparency),
+Text=(L.waiting and"..."or L.state)
+})
+
+if mousebound(S.Position,S.Size)then
+if j.keys.mouse1.click then
+j.keys.mouse1.click=false
+L.waiting=true
+end
+end
+
+if L.waiting then
+for X,Y in j.keys do
+if Y.click then
+L.state=X
+L.waiting=false
+Y.click=false
+
+L.onset(L.state)
+end
+end
+else
+if j.keys[L.state]and j.keys[L.state].click then
+L.callback()
+end
+end
+
+J+=(W+j.padding*2)
+elseif M=="dropdown"then
+local S=L.button
+local T=L.buttonoutline
+local U=L.labeltext
+local V=L.valuetext
+local W=L.arrow
+
+local X=L.height
+local Y=Q.X-j.padding*2
+
+change(S,{
+Size=g(Y-j.padding,X),
+Position=g(R.X+j.padding+1,J),
+Transparency=fetchtrans(S.Transparency)
+})
+
+change(T,{
+Position=S.Position-g(1,1),
+Size=S.Size+g(2,3),
+Transparency=fetchtrans(T.Transparency)
+})
+
+change(U,{
+Position=g(S.Position.X+5,centertext(U.Text,S.Position,S.Size).Y),
+Transparency=fetchtrans(U.Transparency)
+})
+
+local Z=textbound(L.selected)
+change(V,{
+Text=L.selected,
+Position=g(
+S.Position.X+S.Size.X-Z-15,
+centertext(V.Text,S.Position,S.Size).Y
+),
+Transparency=fetchtrans(V.Transparency)
+})
+
+change(W,{
+Text=L.open and"-"or"+",
+Position=g(
+S.Position.X+S.Size.X-10,
+centertext(W.Text,S.Position,S.Size).Y
+),
+Transparency=fetchtrans(W.Transparency)
+})
+
+if mousebound(S.Position,S.Size)and j.keys.mouse1.click then
+L.open=not L.open
+end
+
+
+
+if L.open then
+local _=16
+local aa=#L.options*_
+
+change(L.optionsContainer,{
+Position=g(S.Position.X,S.Position.Y+X+2),
+Size=g(Y-j.padding,aa+j.padding*2),
+Transparency=fetchtrans(L.optionsContainer.Transparency)
+})
+
+change(L.optionsOutline,{
+Position=L.optionsContainer.Position-g(1,1),
+Size=L.optionsContainer.Size+g(2,2),
+Transparency=fetchtrans(L.optionsOutline.Transparency)
+})
+
+for ab,ac in L.optionElements do
+local ad=centertext(ac.Text,L.optionsContainer.Position,L.optionsContainer.Size)
+change(ac,{
+Position=g(ad.X,L.optionsContainer.Position.Y+(j.padding*2)+(_*(ab-1))),
+Transparency=fetchtrans(ac.Transparency),
+Color=n.text
+})
+
+if mousebound(ac.Position,g(L.optionsContainer.Size.X,_))and j.keys.mouse1.click and L.selected~=ac.Text then
+L.selected=ac.Text
+L.callback(L.selected)
+end
+end
+else
+change(L.optionsContainer,{
+Transparency=0,
+})
+change(L.optionsOutline,{
+Transparency=0
+})
+
+for aa,ab in L.optionElements do
+change(ab,{
+Transparency=0
+})
+end
+end
+
+J+=(X+j.padding*2)
+elseif M=="slider"then
+local aa=L.sliderbackground
+local ab=L.text
+local ac=L.slideroutline
+local ad=L.slideframe
+
+local S=L.height
+local T=Q.X-j.padding*2
+
+change(aa,{
+Size=g(T-j.padding,S),
+Position=g(R.X+j.padding+1,J+1),
+Transparency=fetchtrans(aa.Transparency),
+Color=n.mantle
+})
+
+change(ac,{
+Position=aa.Position-g(1,1),
+Size=aa.Size+g(2,3),
+Transparency=fetchtrans(ac.Transparency),
+Color=n.crust
+})
+
+local function truncate(U,V)
+local W=10^(V or 0)
+return math.floor(U*W)/W
+end
+
+local function countDecimalPlaces(U)
+local V=tostring(U)
+local W=string.find(V,"%.")
+if W then
+return#V-W
+end
+return 0
+end
+
+if j.keys.mouse1.hold and mousebound(aa.Position,aa.Size)then
+local U=math.clamp((d.X-aa.Position.X),0,aa.Size.X)/aa.Size.X
+local V=math.floor((L.max-L.min)*U/L.step+0.5)
+local W=L.value
+L.value=truncate(L.min+V*L.step,countDecimalPlaces(L.step))
+if L.value~=W then
+L.callback(L.value)
+end
+end
+
+change(ab,{
+Position=centertext(ab.Text,aa.Position,aa.Size),
+Transparency=fetchtrans(ab.Transparency),
+Color=n.text,
+ZIndex=6,
+Text=L.name.." ("..tostring(L.value)..L.suffix..")"
+})
+
+local U=(L.value-L.min)/(L.max-L.min)
+change(ad,{
+Size=g((math.clamp(U*aa.Size.X-2,0,aa.Size.X-2)),S-2),
+Position=g(R.X+j.padding+2,J+1),
+Transparency=fetchtrans(ad.Transparency),
+})
+
+ad.ZIndex=5
+
+J+=(L.height+j.padding*2)
+end
+end
+
+local aa=textbound(G.name)*1.1
+local ab=B.sections[F-1]and(B.sections[F-1].button.Position.X+B.sections[F-1].button.Size.X)or C.Position.X
+change(G.button,{
+Position=g(ab,C.Position.Y),
+Size=g(aa+3,B.buttonbg.Size.Y-2)
+})
+
+change({G.button,G.buttontext},{Visible=true,Transparency=fetchtrans(G.button.Transparency)})
+
+if B.index==F then
+G.button.ChangeColor(n.mantle,n.base)
+else
+G.button.ChangeColor(n.mantle,n.crust)
+end
+
+change(G.buttontext,{
+Position=centertext(G.name,G.button.Position,G.button.Size),
+Color=n.text
+})
+
+if mousebound(G.button.Position,G.button.Size)and j.keys.mouse1.click then
+B.index=F
+end
+end
+end
+else
+setvisible(x.sections,false)
+for aa,ab in x.sections do
+for ac,ad in ab.sections do
+for A,B in ad._dcache do
+B.Visible=false
+end
+end
+end
+x.button.ChangeColor(n.mantle,n.crust)
+end
+end
+end
+
+function a.tab(aa,ab)
+local ac={}
+
+ac.tabindex=#aa.tabs+1
+ac.name=ab
+ac.button=createGradient({Size=g(200,20),ZIndex=3},aa.colors.mantle,aa.colors.crust,15)
+ac.text=create("Text",{Text=ac.name,ZIndex=4,Outline=false})
+ac.buttonoutline=createOutline(ac.button,aa.colors.crust,1)
+
+ac.sections={}
+ac.side={
+right=0,
+left=0
+}
+ac.menu=aa
+
+ac._dcache={ac.button,ac.text,ac.buttonoutline}
+
+ac.section=section
+
+aa.tabs[ac.tabindex]=ac
+
+return ac
+end
+
+function addsection(aa,ab)
+local ac={}
+
+ac.colors=aa.colors
+ac.name=ab
+ac.section_container=aa.section_container
+ac.button=createGradient({Position=g(),Size=g()},aa.colors.mantle,aa.colors.base,25)
+ac.button.ZIndex=4
+ac.buttontext=create("Text",{
+Text=ab,
+Color=aa.colors.text,
+ZIndex=5,
+Outline=false
+})
+
+ac.elements={}
+ac.addbutton=button
+ac.addtoggle=toggle
+ac.addkeybind=keybind
+ac.adddropdown=dropdown
+ac.addslider=slider
+
+ac._dcache={
+ac.button,
+ac.buttontext
+}
+
+table.insert(aa.sections,ac)
+
+return ac
+end
+
+function section(aa,ab,ac)
+local ad={}local j=
+aa.tabindex
+
+local k=ac and"right"or"left"local l=
+aa.menu._dcache[3].Size.Y
+
+ad.section_container=create("Square",{
+Filled=true,
+Color=aa.menu.colors.base,
+ZIndex=2
+})
+ad.section_outline=createOutline(ad.section_container,aa.menu.colors.crust,1)
+
+ad.buttonbg=create("Square",{
+Filled=true,
+Color=aa.menu.colors.crust,
+ZIndex=3,
+})
+
+ad.button=createGradient({Position=g(),Size=g()},aa.menu.colors.mantle,aa.menu.colors.base,25)
+ad.button.ZIndex=4
+
+ad.buttontext=create("Text",{
+Text=ab,
+Color=aa.menu.colors.text,
+ZIndex=5,
+Outline=false
+})
+
+aa.side[k]+=1
+
+ad.colors=aa.menu.colors
+ad.name=ab
+ad.sections={ad}
+ad.index=1
+ad.sideindex=aa.side[k]-1
+ad.side=k
+ad.addsection=addsection
+
+ad.addbutton=button
+ad.addtoggle=toggle
+ad.addkeybind=keybind
+ad.adddropdown=dropdown
+ad.addslider=slider
+
+ad.elements={}
+
+
+ad._dcache={
+ad.section_container,
+ad.section_outline,
+ad.buttonbg,
+ad.button,
+ad.buttontext
+}
+
+table.insert(aa.sections,ad)
+
+return ad
+end
+
+local function cleancache(aa,ab)
+ab=ab or{}
+
+if ab[aa]then return end
+ab[aa]=true
+
+for ac,ad in pairs(aa)do
+if type(ad)=='table'then
+if ad._dcache then
+for k,l in ad._dcache do
+l:Remove()
+end
+end
+
+cleancache(ad,ab)
+end
+end
+end
+
+function setvisible(aa,ab,ac)
+ac=ac or{}
+
+if ac[aa]then return end
+ac[aa]=true
+
+for ad,k in pairs(aa)do
+if type(k)=='table'then
+if k.ignoreVisible then continue end
+if k._dcache then
+for l,m in k._dcache do
+m.Visible=ab or false
+end
+end
+
+setvisible(k,ab,ac)
+end
+end
+end
+
+function button(aa,ab)
+local ac=ab.Name
+local ad=ab.Callback
+
+local k={
+class="button",
+callback=ad or function()end,
+index=#aa.elements+1,
+height=18
+}local l=
+
+aa.section_container.Position+g(0,aa.groupoffset)
+
+k.text=create("Text",{Text=ac,Color=aa.colors.text,ZIndex=5,Outline=false})
+k.buttonbase=createGradient({Position=g(),Size=g()},aa.colors.mantle,aa.colors.crust,25)
+k.buttonbase.ZIndex=4
+k.buttonoutline=createOutline(k.buttonbase,aa.colors.crust,3)
+
+k._dcache={
+k.buttonbase,
+k.buttonoutline,
+k.text
+}
+
+table.insert(aa.elements,k)
+return k
+end
+
+function toggle(aa,ab)
+local ac=ab.Name
+local ad=ab.Callback local k=
+ab.Enabled
+
+local l={
+height=18,
+class="toggle",
+callback=ad or function()end,
+index=#aa.elements+1,
+state=false
+}local m=
+l.height local n=
+
+aa.section_container.Position+g(0,aa.groupoffset)
+
+l.text=create("Text",{Text=ac,Color=aa.colors.text,ZIndex=5,Outline=false})
+l.togglebutton=createGradient({Position=g(),Size=g()},aa.colors.mantle,aa.colors.crust,25)
+l.togglebutton.ZIndex=4
+
+l.toggleoutline=createOutline(l.togglebutton,aa.colors.crust,3)
+
+l._dcache={
+l.togglebutton,
+l.toggleoutline,
+l.text
+}
+
+table.insert(aa.elements,l)
+return l
+end
+
+function keybind(aa,ab)
+local ac=ab.Name
+local ad=ab.Default
+local l=ab.Changed
+local n=ab.Callback
+
+local o={
+height=18,
+index=#aa.elements+1,
+state=ad or"",
+class="keybind",
+onset=l or function()end,
+callback=n or function()end,
+}local p=
+o.height local q=
+
+aa.section_container.Position+g(0,aa.groupoffset)
+
+o.text=create("Text",{Text=ac,Color=aa.colors.text,ZIndex=5,Outline=false})
+o.statetext=create("Text",{Text=ad or"",Color=aa.colors.subtext0,ZIndex=5,Outline=false})
+o.button=createGradient({Position=g(),Size=g()},aa.colors.mantle,aa.colors.crust,25)
+o.button.ZIndex=4
+
+o.outline=createOutline(o.button,aa.colors.crust,3)
+
+o._dcache={
+o.button,
+o.outline,
+o.text,
+o.statetext
+}
+
+table.insert(aa.elements,o)
+return o
+end
+
+function dropdown(aa,ab)
+local ac=ab.Name
+local ad=ab.Options or{}
+local l=ab.Default or(ad[1]or"None")
+local n=ab.Callback
+
+local o={
+class="dropdown",
+callback=n or function()end,
+options=ad,
+selected=l,
+open=false,
+height=18,
+index=#aa.elements+1,
+optionsContainer=nil,
+optionsOutline=nil,
+optionElements={},
+}
+
+o.button=createGradient({Position=g(),Size=g()},aa.colors.mantle,aa.colors.crust,15)
+o.button.ZIndex=4
+o.buttonoutline=createOutline(o.button,aa.colors.crust,3)
+o.labeltext=create("Text",{Text=ac,Color=aa.colors.text,ZIndex=5,Outline=false})
+o.valuetext=create("Text",{Text=o.selected,Color=aa.colors.subtext0,ZIndex=5,Outline=false})
+o.arrow=create("Text",{Color=aa.colors.subtext1,ZIndex=5,Outline=false,})
+
+o.optionsContainer=create("Square",{Filled=true,Color=aa.colors.mantle,ZIndex=10,Visible=false})
+o.optionsOutline=createOutline(o.optionsContainer,aa.colors.crust,9)
+o.optionsOutline.Visible=false
+
+for q,r in ad do
+o.optionElements[q]=create("Text",{
+Text=r,
+ZIndex=10,
+Outline=false,
+})
+end
+
+o._dcache={
+o.button,
+o.buttonoutline,
+o.labeltext,
+o.valuetext,
+o.arrow,
+o.optionsContainer,
+o.optionsOutline,
+}
+
+for q,r in o.optionElements do
+table.insert(o._dcache,r)
+end
+
+table.insert(aa.elements,o)
+return o
+end
+
+function slider(aa,ab)
+local ac=ab.Name
+local ad=ab.Callback
+
+local l={
+class="slider",
+callback=ad or function()end,
+max=ab.Max or 100,
+min=ab.Minimum or 0,
+step=ab.Step or 1,
+suffix=ab.Suffix or"",
+index=#aa.elements+1,
+height=18,
+name=ac,
+}
+
+l.min-=l.step
+l.value=ab.Default or l.min local n=
+
+aa.section_container.Position+g(0,aa.groupoffset)
+
+l.text=create("Text",{Text=ac,Color=aa.colors.text,ZIndex=5,Outline=false})
+l.sliderbackground=create("Frame",{
+Color=aa.colors.mantle,
+ZIndex=4,
+})
+l.slideroutline=createOutline(l.sliderbackground,aa.colors.crust,3)
+
+l.slideframe=createGradient({Position=g(),Size=g()},aa.colors.teal,aa.colors.sapphire,15)
+
+l._dcache={
+l.sliderbackground,
+l.slideroutline,
+l.text,
+l.slideframe
+}
+
+table.insert(aa.elements,l)
+return l
+end
+
+function a.Destroy(aa)
+cleancache(aa)
+setrobloxinput(true)
+end
+end
+
+local aa=game:GetService"Players".LocalPlayer
+
+local ab=a:create("Gilrock",{
+theme="frappe",
+size=Vector2.new(400,200)
+})
+
+local ac=ab:tab"cheat"
+local ad=ab:tab"options"
+
+local b=ad:section("ui settings",false)
+
+b:addbutton{
+Name="Destroy UI",
+Callback=function()
+ab.running=false
+end
+}
+
+b:addkeybind{
+Name="Toggle UI",
+Changed=function(c)
+ab.closebind=c
+end,
+Default=ab.closebind
+}
+
+b:adddropdown{
+Name="Theme",
+Options=ab.themenames,
+Default=ab.theme,
+Callback=function(c)
+ab:changeTheme(c:lower())
+end
+}
+
+local c=ac:section("modifications",false)
+local d=c:addsection"teleports"
+
+c:addslider{
+Name="Mining Speed",
+Max=.5,
+Min=.01,
+Step=.01,
+Default=.5,
+Callback=function(e)
+aa.MiningSpeed.Value=e
+end
+}
+
+local e=false
+c:addtoggle{
+Name="Auto Quick-Event",
+Callback=function(f)
+e=f
+end
+}
+
+c:addtoggle{
+Name="Infinite Reach",
+Callback=function(f)
+aa.Reach.Value=(f and 50 or 5)
+end
+}
+
+d:addbutton{
+Name="Craftmaster",
+Callback=function()
+aa.Character.HumanoidRootPart.Position=Vector3.new(-489.99,838.52,-3975.26)
+end
+}
+
+d:addbutton{
+Name="Merchant",
+Callback=function()
+aa.Character.HumanoidRootPart.Position=Vector3.new(-624.35,839.77,-3998.65)
+end
+}
+
+d:addbutton{
+Name="Mining Lift",
+Callback=function()
+aa.Character.HumanoidRootPart.Position=Vector3.new(-545.53,842.99,-4114.37)
+end
+}
+
+d:addbutton{
+Name="Farmer",
+Callback=function()
+aa.Character.HumanoidRootPart.Position=Vector3.new(-413.08,828.24,-3672.21)
+end
+}
+
+local f=aa.PlayerGui.HUD
+
+local g=wait
+local function wait(h)
+local i=os.clock()
+repeat g()until os.clock()-i>=h
+end
+
+while ab.running do
+ab:step()
+
+if e then
+local h=false
+for i,l in f:GetChildren()do
+if l.Name=="ManualAbilityPrompt"and h then h=false
+wait(.8)
+keypress(0x45)
+keyrelease(0x45)
+elseif l.Name=="ManualAbilityPrompt"and not h then
+h=true
+end
+end
+end
+end
+ab:Destroy()
