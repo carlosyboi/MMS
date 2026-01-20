@@ -1,0 +1,469 @@
+task.wait()
+local a=true
+
+local b=game:GetService"Workspace"
+local c=game:GetService"Players"
+local d=c.LocalPlayer
+local e=b:FindFirstChild"CurrentRooms"
+
+local f=game:GetService"UserInputService"
+
+local function detectentities()
+local g={}
+for h,i in pairs(b:GetChildren())do
+if i.Name=="RushMoving"then
+table.insert(g,{name="Rush",instance=i})
+end
+if i.Name=="AmbushMoving"then
+table.insert(g,{name="Ambush",instance=i})
+end
+end
+
+
+
+
+
+
+task.wait()
+return g
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function getdoors()
+
+if not e then
+return{0,0}
+end
+
+local g=0
+
+local h=e:GetChildren()
+if#h==0 then
+return{0,0}
+end
+
+for i,j in pairs(h)do
+local k=tonumber(j.Name)
+if k then
+if k>g then
+g=k
+end
+
+end
+end
+
+local i=math.max(g-1,0)
+
+return{g,i}
+end
+
+local function getrooms()
+local g=0
+for h,i in pairs(e:GetChildren())do
+local j=tonumber(i.Name)
+if j and j>g then
+g=j
+end
+end
+
+return{
+current=g-1,
+next=g
+}
+end
+local g={}
+
+
+local function updateNextRoomCache()
+local h=getrooms().next
+if g[h]then return end
+
+local i=e:FindFirstChild(tostring(h))
+if not i then return end
+
+local j=i:FindFirstChild"PathfindNodes"
+if not j then return end
+
+local k={}
+for l,m in ipairs(j:GetChildren())do
+k[#k+1]=m.Position
+end
+
+if#k>1 then
+g[h]=k
+end
+end
+
+local function getCurrentRoomNodes()
+local h=getrooms().current
+return g[h]
+end
+
+local function boostspeed(h)
+if d.Character then
+d.Character:SetAttribute("SpeedBoost",h)
+end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function EntityDetectionFlashWarning()
+local h=b.CurrentCamera.ViewportSize
+local i=Drawing.new"Text"
+
+i.Text="Rush / Ambush Spawned!"
+i.Size=200
+i.Color=Color3.fromRGB(255,0,0)
+i.Outline=true
+i.Position=Vector2.new(0,h.Y/2)
+i.Visible=true
+
+local j=os.clock()
+while os.clock()-j<2 do
+task.wait()
+end
+
+i:Remove()
+end
+local h=true
+local function EntityDetection()
+if not h then return end
+local i={}
+
+while a do
+task.wait()
+
+
+for j in pairs(i)do
+if not j.Parent then
+i[j]=nil
+end
+end
+
+local j=detectentities()
+if#j==0 then continue end
+
+for k,l in pairs(j)do
+local m=l.instance
+if not i[m]then
+notify("Rush / Ambush SPAWNED!",l.name,5)
+EntityDetectionFlashWarning()
+i[m]=true
+end
+end
+end
+end
+local function getdistance(i)
+local j=d.Character and d.Character.HumanoidRootPart and d.Character.HumanoidRootPart.Position
+local k=i.Position
+
+local l=vector.magnitude(vector.create(j.X,j.Y,j.Z)-vector.create(k.X,k.Y,k.Z))
+return math.round(l)
+end
+
+local i=true
+local j=true
+local function DoorESP()
+local k
+local l={}
+local m
+while a do task.wait()
+if not i then
+if#l==0 then continue end
+for n,o in pairs(l)do
+o.Visible=false
+o:Remove()
+l[o]=nil
+end
+continue
+end
+if j then
+m={getdoors()[2]}
+else
+m=getdoors()
+end
+if m==nil then continue end
+for n,o in ipairs(m)do
+local p=e[tostring(o)].Door and e[tostring(o)].Door.Collision
+if not p then continue end
+local q,r=WorldToScreen(p.Position)
+
+if not l[o]then
+
+l[o]=Drawing.new"Text"
+l[o].Size=20
+l[o].Color=Color3.fromRGB(50,255,128)
+l[o].Outline=true
+end
+
+l[o].Position=q
+l[o].Visible=r
+if p.Parent.Parent:GetAttribute"RequiresKey"==true then
+l[o].Text=tostring("Door "..o.."\n["..getdistance(p)..']\n REQUIRES KEY')
+else
+l[o].Text=tostring("Door "..o.."\n["..getdistance(p).."]")
+end
+
+k=o-1
+end
+if l[k]then
+l[k]:Remove()
+l[k]=nil
+end
+end
+end
+local k=true
+local function pathesp()
+local l={}
+
+while a do
+task.wait()
+
+updateNextRoomCache()
+
+local m=getCurrentRoomNodes()
+if not m or#m<2 then
+for n,o in pairs(l)do o:Remove()end
+table.clear(l)
+continue
+end
+
+for n=1,#m-1 do
+if not l[n]then
+l[n]=Drawing.new"Line"
+l[n].Thickness=2
+l[n].Color=Color3.fromRGB(50,255,128)
+end
+
+local o,p=WorldToScreen(m[n])
+local q,r=WorldToScreen(m[n+1])
+
+l[n].From=o
+l[n].To=q
+l[n].Visible=p and r
+end
+
+for n=#m,#l do
+if l[n]then
+l[n]:Remove()
+l[n]=nil
+end
+end
+end
+end
+
+local l={
+one=1,two=2,three=3,four=4,five=5,
+six=6,seven=7,eight=8,nine=9,ten=10
+
+}
+local m={
+speed=function(m)
+local n=m[1]and m[1]:lower()
+local o=l[n]
+if o then
+boostspeed(o)
+notify("Speed","Speed set to "..o,5)
+else
+notify("Speed","Usage: speed <one|two|...|ten>",5)
+end
+end,
+
+doors=function(m)
+local n=m[1]and m[1]:lower()
+if n=="true"then
+i=true
+notify("Door ESP","Door ESP enabled",5)
+elseif n=="false"then
+i=false
+notify("Door ESP","Door ESP disabled",5)
+else
+notify("Door ESP","Usage: doors <true|false>",5)
+end
+end,
+nodes=function(m)
+local n=m[1]and m[1]:lower()
+if n=="true"then
+k=true
+notify("Path ESP","Path ESP enabled",5)
+elseif n=="false"then
+k=false
+notify("Path ESP","Path ESP disabled",5)
+else
+notify("Path ESP","Usage: path <true|false>",5)
+end
+end,
+
+notify=function(m)
+local n=m[1]and m[1]:lower()
+if n=="true"then
+h=true
+notify("Entity Notify","Entity notifications enabled",5)
+elseif n=="false"then
+h=false
+notify("Entity Notify","Entity notifications disabled",5)
+else
+notify("Entity Notify","Usage: notify <true|false>",5)
+end
+end,
+
+exit=function()
+a=false
+for m,n in pairs(gui)do
+n.Visible=false
+n:Remove()
+gui[n]=nil
+setrobloxinput(true)
+end
+end,
+
+help=function(m)
+print"Available commands:"
+print"- speed <one|two|...|ten>      -- Set player speed"
+print"- doors <true|false>           -- Show only current door or all doors"
+print"- notify <true|false>          -- Toggle entity spawn notifications"
+end
+}
+
+local n={}
+local o=b.CurrentCamera and b.CurrentCamera.ViewportSize
+assert(o,"Couldnt Fetch Viewport Size :(")
+
+n.Enabled=false
+
+n.MAIN_BAR=Drawing.new"Square"
+n.MAIN_BAR.Transparency=0.25
+n.MAIN_BAR.Visible=n.Enabled
+n.MAIN_BAR.Position=Vector2.new(0,150)
+n.MAIN_BAR.Size=Vector2.new(o.X,50)
+n.MAIN_BAR.Color=Color3.fromRGB(31,31,31)
+n.MAIN_BAR.Filled=true
+
+n.MAIN_BAR_TEXT=Drawing.new"Text"
+n.MAIN_BAR_TEXT.Size=16
+n.MAIN_BAR_TEXT.Outline=false
+n.MAIN_BAR_TEXT.Visible=n.Enabled
+n.MAIN_BAR_TEXT.Position=Vector2.new(n.MAIN_BAR.Position.X,n.MAIN_BAR.Position.Y+n.MAIN_BAR.Size.Y/2)
+n.MAIN_BAR_TEXT.Text=""
+
+n.INFO_BOX=Drawing.new"Text"
+n.INFO_BOX.Size=14
+n.INFO_BOX.Outline=true
+n.INFO_BOX.Visible=n.Enabled
+n.INFO_BOX.Position=Vector2.new(10,n.MAIN_BAR.Position.Y+n.MAIN_BAR.Size.Y+10)
+n.INFO_BOX.Text=[[
+Available commands:
+- speed <one|two|...|ten>   -- Set player speed
+- doors <true|false>        -- Toggle Door ESP
+- nodes <true|false>        -- Toggle Path ESP
+- notify <true|false>       -- Toggle entity spawn notifications
+- exit                      -- Close Everything
+- help                      -- Show this list
+]]
+
+local p={
+[1]="a",[2]="b",[3]="c",[4]="d",[5]="e",
+[6]="f",[7]="g",[8]="h",[9]="i",[10]="j",
+[11]="k",[12]="l",[13]="m",[14]="n",[15]="o",
+[16]="p",[17]="q",[18]="r",[19]="s",[20]="t",
+[21]="u",[22]="v",[23]="w",[24]="x",[25]="y",
+[26]="z",
+[31]=" "
+}
+local function GUI_LOOP()
+f.InputBegan:Connect(function(q,r)
+if r then return end
+if not n.Enabled then return end
+
+local s=q.KeyCode
+
+
+if s==Enum.KeyCode.Enter then
+if n.MAIN_BAR_TEXT.Text~=""then
+local t={}
+for u in string.gmatch(n.MAIN_BAR_TEXT.Text,"%S+")do
+table.insert(t,u)
+end
+
+local u=table.remove(t,1)
+if m[u]then
+m[u](t)
+else
+notify("Error","Unknown command:"..u,5)
+end
+
+n.MAIN_BAR_TEXT.Text=""
+n.MAIN_BAR_TEXT.Text=n.MAIN_BAR_TEXT.Text
+end
+return
+end
+
+
+if s>=Enum.KeyCode.A and s<=Enum.KeyCode.Z then
+local t=p[s]
+n.MAIN_BAR_TEXT.Text=n.MAIN_BAR_TEXT.Text..t
+n.MAIN_BAR_TEXT.Text=n.MAIN_BAR_TEXT.Text
+return
+end
+
+
+if s==Enum.KeyCode.Space then
+n.MAIN_BAR_TEXT.Text=n.MAIN_BAR_TEXT.Text.." "
+n.MAIN_BAR_TEXT.Text=n.MAIN_BAR_TEXT.Text
+return
+end
+end)
+while a do task.wait()
+
+setrobloxinput(not n.Enabled)
+
+n.MAIN_BAR.Visible=n.Enabled
+n.MAIN_BAR_TEXT.Visible=n.Enabled
+n.INFO_BOX.Visible=n.Enabled
+
+if iskeypressed(0xBA)then
+n.Enabled=not n.Enabled
+n.MAIN_BAR_TEXT.Text=""
+repeat task.wait()until not iskeypressed(0xBA)
+end
+
+if iskeypressed(0x08)then
+if not n.Enabled then continue end
+local q=string.sub(n.MAIN_BAR_TEXT.Text,1,#n.MAIN_BAR_TEXT.Text-1)
+n.MAIN_BAR_TEXT.Text=q
+task.wait(0.05)
+end
+end
+end
+
+
+spawn(EntityDetection)
+spawn(DoorESP)
+spawn(GUI_LOOP)
+spawn(pathesp)
+print"Active"
